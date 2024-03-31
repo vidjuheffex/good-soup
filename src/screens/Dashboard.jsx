@@ -27,23 +27,7 @@ export default () => {
 
   return (
     <div className="Dashboard">
-      <SidebarMenu
-        submenu={
-          params?.stockid && (
-            <SidebarMenu>
-              <SidebarMenuGroup
-                title="Recipes"
-                createNewLink="create-development-recipe"
-                items={data.developmentRecipes.map((i) => ({
-                  ...i,
-                  label: i.name,
-                  link: `stock/${params.stockid}/${i.id}`,
-                }))}
-              />
-            </SidebarMenu>
-          )
-        }
-      >
+      <SidebarMenu>
         <SidebarMenuGroup
           title="Chemistry"
           createNewLink="create-chemistry"

@@ -16,5 +16,5 @@ export default async ({ request, params }) => {
     }
   }
 
-  return redirect("/");
+  return redirect("..");
 };

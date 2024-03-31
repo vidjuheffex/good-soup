@@ -10,14 +10,17 @@ import Root from './screens/Root'
 import CreateChemistry from './screens/CreateChemistry'
 import CreateFilmStock from './screens/CreateFilmStock'
 import CreateDevelopmentRecipe from './screens/CreateDevelopmentRecipe'
+import StockRoot from './screens/StockRoot'
 
 // loader
 import getDashboardData from './loaders/get-dashboard-data'
+import getStockRecipes from './loaders/get-stock-recipes'
 
 // actions
 import createChemistryRecipe from './actions/create-chemistry-recipe'
 import createFilmStock from './actions/create-film-stock'
 import createDevelopmentRecipe from './actions/create-development-recipe'
+
 
 
 const router = createBrowserRouter([
@@ -26,14 +29,22 @@ const router = createBrowserRouter([
         path: '/',
         element: <Dashboard />,
         loader: getDashboardData,
+        id: "dashboard",
         children: [
           {
             path: "stock/:stockid",
-            element: <Outlet />,
+            element: <StockRoot />,
+            loader: getStockRecipes,
+            id: 'stock-route',
             children: [
               {
                 path: ":recipeid",
                 element: <div>a recipe</div>
+              },
+              {
+                path: "create-development-recipe",
+                element: <CreateDevelopmentRecipe />,
+                action: createDevelopmentRecipe
               },
             ]
           },
@@ -51,12 +62,6 @@ const router = createBrowserRouter([
             element: <CreateFilmStock />,
             action: createFilmStock
           },
-          {
-            path: "create-development-recipe",
-            element: <CreateDevelopmentRecipe />,
-            action: createDevelopmentRecipe
-          },
-
         ]
       }
     ]
