@@ -1,0 +1,19 @@
+.Input {
+    flex-direction: column;
+    position: relative;
+
+    input, textarea {
+        margin: 0;
+        box-sizing: border-box;
+        padding: 10px;
+        width: 100%;
+        border: none;
+        border-bottom: 1px solid rgba(0,0,0,.25);
+    }
+
+    &:hover {
+        input {
+        border-bottom-color: black;
+        }
+    }
+}

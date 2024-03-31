@@ -1,0 +1,33 @@
+* {
+  font-family: monospace;
+}
+
+html {
+  height: 1px;
+  min-height: 100%;
+
+}
+
+body{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#root {
+  display: contents;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: initial;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-position: below;
+  }
+}

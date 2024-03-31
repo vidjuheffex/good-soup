@@ -1,0 +1,12 @@
+.SidebarMenuGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .title {
+        padding: 0;
+        margin: 0;
+    }
+
+
+}

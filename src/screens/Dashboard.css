@@ -1,0 +1,11 @@
+.Dashboard {
+    display: flex;
+    height: 100%;
+
+
+    .mainarea {
+        overflow-y: auto;
+        height: 100%;
+        flex: 1;
+    }
+}
