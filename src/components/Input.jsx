@@ -1,8 +1,9 @@
-import  { forwardRef } from "react";import "./Input.css";
+import { forwardRef } from "react"; import "./Input.css";
+import DurationInput from "./DurationInput";
 
 const Input = forwardRef(({ placeholder, label, type, ...props }, ref) => {
     label = label || "Label";
-    let Component = type !== "textarea" ? "input" : "textarea";
+    let Component = type == "textarea" ? "textarea" : type == "duration" ? DurationInput : "input";
 
     return (
         <label className="Input">

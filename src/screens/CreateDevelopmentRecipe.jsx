@@ -78,6 +78,7 @@ export default () => {
           required
         />
         <h3>Steps</h3>
+        <input type="hidden" name="steps" value={JSON.stringify(steps)} />
         {steps.map((step, index) => {
           return (
             <StepInput
@@ -94,7 +95,7 @@ export default () => {
                 agitationInversions: step.agitationInversions,
                 agitationIntervals: step.agitationIntervals,
                 temp: step.temp,
-                duration: step.duration
+                duration: step.duration,
               }}
             />
           );

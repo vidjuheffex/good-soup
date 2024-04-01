@@ -1,0 +1,10 @@
+@keyframes rotate-tank {
+  to {
+    transform: rotate(180deg);
+  }
+}
+.Tank {
+  &.animate-agitation {
+    animation: rotate-tank 1s alternate infinite;
+  }
+}
