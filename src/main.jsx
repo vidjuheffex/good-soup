@@ -34,62 +34,65 @@ import createFilmStock from "./actions/create-film-stock";
 import createDevelopmentRecipe from "./actions/create-development-recipe";
 import createMix from "./actions/create-mix";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Dashboard />,
-    loader: getDashboardData,
-    id: "dashboard",
-    children: [
-      {
-        path: "stock/:stockid",
-        element: <StockRoot />,
-        loader: getStockRecipes,
-        id: "stock-route",
-        children: [
-          {
-            path: ":recipeid",
-            loader: getStockRecipe,
-            element: <RecipeRoot />,
-          },
-          {
-            path: "create-development-recipe",
-            element: <CreateDevelopmentRecipe />,
-            action: createDevelopmentRecipe,
-          },
-        ],
-      },
-      {
-        path: "mix/:mixid",
-        element: <MixRoot />,
-        loader: getMix,
-      },
-      {
-        path: "chemistry/:chemistryid",
-        element: <Outlet />,
-        loader: getChemistry,
-        id: "chemistry",
-        children: [
-          {
-            path: "create-mix",
-            action: createMix,
-            element: <CreateMix />,
-          },
-        ],
-      },
-      {
-        path: "create-chemistry",
-        element: <CreateChemistry />,
-        action: createChemistryRecipe,
-      },
-      {
-        path: "create-film-stock",
-        element: <CreateFilmStock />,
-        action: createFilmStock,
-      },
-    ],
-  },
-]);
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Dashboard />,
+      loader: getDashboardData,
+      id: "dashboard",
+      children: [
+        {
+          path: "stock/:stockid",
+          element: <StockRoot />,
+          loader: getStockRecipes,
+          id: "stock-route",
+          children: [
+            {
+              path: ":recipeid",
+              loader: getStockRecipe,
+              element: <RecipeRoot />,
+            },
+            {
+              path: "create-development-recipe",
+              element: <CreateDevelopmentRecipe />,
+              action: createDevelopmentRecipe,
+            },
+          ],
+        },
+        {
+          path: "mix/:mixid",
+          element: <MixRoot />,
+          loader: getMix,
+        },
+        {
+          path: "chemistry/:chemistryid",
+          element: <Outlet />,
+          loader: getChemistry,
+          id: "chemistry",
+          children: [
+            {
+              path: "create-mix",
+              action: createMix,
+              element: <CreateMix />,
+            },
+          ],
+        },
+        {
+          path: "create-chemistry",
+          element: <CreateChemistry />,
+          action: createChemistryRecipe,
+        },
+        {
+          path: "create-film-stock",
+          element: <CreateFilmStock />,
+          action: createFilmStock,
+        },
+      ],
+    },
+  ],
+  { basename: "/good-soup" }
+);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
