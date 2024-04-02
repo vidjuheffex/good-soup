@@ -18,7 +18,7 @@ export default async ({ request, params }) => {
           step["agitationIntervals"]
         );
         step["temp"] = parseInt(step["temp"], 10);
-        step["agitationInversions"] = parseInt(step["agitationInversions"], 10);
+        step["agitationTime"] = parseInt(step["agitationTime"], 10);
         step["initialAgitation"] = durationToSeconds(step["initialAgitation"]);
 
         return step;

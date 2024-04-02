@@ -28,8 +28,7 @@ export default () => {
           return {
             ...step,
             initialAgitation: formRef.current["step-initial-agitation"].value,
-            agitationInversions:
-              formRef.current["step-agitation-inversions"].value,
+            agitationTime: formRef.current["step-agitation-time"].value,
             agitationIntervals:
               formRef.current["step-agitation-intervals"].value,
             chemistry: formRef.current["step-chemistry"].value,
@@ -56,7 +55,7 @@ export default () => {
       {
         id: newStepId,
         initialAgitation: null,
-        agitationInversions: null,
+        agitationTime: null,
         agitationIntervals: null,
         chemistry: null,
         temp: null,
@@ -92,7 +91,7 @@ export default () => {
               defaultValues={{
                 chemistry: step.chemistry,
                 initialAgitation: step.initialAgitation,
-                agitationInversions: step.agitationInversions,
+                agitationTime: step.agitationTime,
                 agitationIntervals: step.agitationIntervals,
                 temp: step.temp,
                 duration: step.duration,

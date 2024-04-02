@@ -13,4 +13,9 @@
   .step:not(.active) {
     opacity: 0.5;
   }
+
+  .center {
+    margin-left: auto;
+    margin-right: auto;
+  }
 }

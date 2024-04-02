@@ -2,7 +2,7 @@ import "./Dashboard.css";
 import SidebarMenu from "../components/SidebarMenu.jsx";
 import SidebarMenuGroup from "../components/SidebarMenuGroup.jsx";
 
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 
 import {
   Outlet,
@@ -10,6 +10,8 @@ import {
   useLoaderData,
   useParams,
   useRouteLoaderData,
+  NavLink,
+  Link,
 } from "react-router-dom";
 
 export default () => {
@@ -19,7 +21,11 @@ export default () => {
   const prevStockId = useRef();
 
   useEffect(() => {
-    if (params.stockid && (prevStockId.current === undefined || prevStockId.current !== params.stockid)) {
+    if (
+      params.stockid &&
+      (prevStockId.current === undefined ||
+        prevStockId.current !== params.stockid)
+    ) {
       fetcher.load();
     }
     prevStockId.current = params.stockid;
@@ -28,11 +34,23 @@ export default () => {
   return (
     <div className="Dashboard">
       <SidebarMenu>
-        <SidebarMenuGroup
-          title="Chemistry"
-          createNewLink="create-chemistry"
-          items={data.chemistryRecipes.map((i) => ({ ...i, label: i.name, link: `/chemistry/${i.id}` }))}
-        />
+        <div className="SidebarMenuGroup">
+          <h2 className="title">Chemistry</h2>
+          {data.chemistryRecipes.map((item) => (
+            <Fragment key={item.id}>
+              <NavLink key={item.id} to={`/chemistry/${item.id}/create-mix`}>
+                {`Mix ${item.name}`}
+              </NavLink>
+              {item.mixes.map((mix) => (
+                <NavLink
+                  key={mix.id}
+                  to={`/mix/${mix.id}`}
+                >{`•${mix.name}`}</NavLink>
+              ))}
+            </Fragment>
+          ))}
+          <Link to={`/create-chemistry`}>[+ Create New]</Link>
+        </div>
         <SidebarMenuGroup
           title="Development"
           createNewLink="create-film-stock"

@@ -24,6 +24,15 @@ export function open() {
         keyPath: "id",
       });
 
+      const mixStore = db.createObjectStore("mixes", {
+        keyPath: "id",
+      });
+
+      mixStore.createIndex("by_id", "id");
+      mixStore.createIndex("by_chemistry", "chemistryId");
+
+      // Seed database with sample data
+
       const sampleChemId = crypto.randomUUID();
       const sampleStockId = crypto.randomUUID();
 
@@ -34,6 +43,8 @@ export function open() {
         notes: "",
         ratio: "1:0",
         shelfLife: "2m",
+        exhaustionRate: "15s",
+        oneShot: false,
       });
 
       filmStockStore.put({ id: sampleStockId, name: "Kentmere 400" });
@@ -45,7 +56,7 @@ export function open() {
           {
             id: crypto.randomUUID(),
             initialAgitation: 30,
-            agitationInversions: 4,
+            agitationTime: 4,
             agitationIntervals: 60,
             chemistry: sampleChemId,
             temp: 75,

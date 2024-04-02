@@ -1,6 +1,6 @@
 import { useCallback, useRef } from "react";
 import Input from "./Input";
-import './StepInput.css';
+import "./StepInput.css";
 
 export default ({
   chemistries,
@@ -10,15 +10,14 @@ export default ({
   handleEdit,
   disabled,
   id,
-  defaultValues={}
+  defaultValues = {},
 }) => {
-  console.log(defaultValues)
   function validateSave(event) {
     const isValid = [
       selectChemistryInputRef.current,
       durationInputRef.current,
       initialAgitationInputRef.current,
-      agitationInversionsInputRef.current,
+      agitationTimeInputRef.current,
       agitationIntervalsInputRef.current,
       tempInputRef.current,
     ].every((ref) => ref && ref.checkValidity());
@@ -30,17 +29,17 @@ export default ({
 
   const handleEditClick = useCallback(() => {
     handleEdit(id);
-  },[handleEdit, id])
+  }, [handleEdit, id]);
 
   const selectChemistryInputRef = useRef();
   const durationInputRef = useRef();
   const initialAgitationInputRef = useRef();
-  const agitationInversionsInputRef = useRef();
+  const agitationTimeInputRef = useRef();
   const agitationIntervalsInputRef = useRef();
   const tempInputRef = useRef();
 
   return (
-    <div className={`StepInput ${editing ? 'editing' : ''}`}>
+    <div className={`StepInput ${editing ? "editing" : ""}`}>
       {editing && (
         <>
           <select
@@ -53,7 +52,9 @@ export default ({
               Please select a chemistry
             </option>
             {chemistries.map((i) => (
-              <option key={i.id} value={i.id}>{i.name}</option>
+              <option key={i.id} value={i.id}>
+                {i.name}
+              </option>
             ))}
           </select>
           <Input
@@ -70,7 +71,7 @@ export default ({
             name="step-duration"
             label="Duration"
             placeholder="hh:mm:ss"
-            pattern="^((\d+:)?\d+:)?\d*$" 
+            pattern="^((\d+:)?\d+:)?\d*$"
             required
             ref={durationInputRef}
             defaultValue={defaultValues?.duration || ""}
@@ -80,18 +81,20 @@ export default ({
             label="Initial Agitation"
             type="text"
             placeholder="hh:mm:ss"
-            pattern="^((\d+:)?\d+:)?\d*$" 
+            pattern="^((\d+:)?\d+:)?\d*$"
             ref={initialAgitationInputRef}
             defaultValue={defaultValues?.initialAgitation || ""}
+            required
           />
           <Input
-            name="step-agitation-inversions"
-            label="Agitation Inversions"
-            type="number"
+            name="step-agitation-time"
+            label="Agitation Time"
+            type="text"
+            pattern="^((\d+:)?\d+:)?\d*$"
             placeholder="e.g. 4"
             required
-            ref={agitationInversionsInputRef}
-            defaultValue={defaultValues?.agitationInversions || ""}
+            ref={agitationTimeInputRef}
+            defaultValue={defaultValues?.agitationTime || ""}
           />
           <Input
             name="step-agitation-intervals"

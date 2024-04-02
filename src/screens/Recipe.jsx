@@ -9,6 +9,7 @@ export default ({ developmentRecipe }) => {
   const [isRunning, setIsRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const startTimeRef = useRef(null);
+  const pauseTimeRef = useRef(null);
   const requestRef = useRef(null);
   const tankRef = useRef(null);
   const [progress, setProgress] = useState({});
@@ -20,20 +21,26 @@ export default ({ developmentRecipe }) => {
       setIsRunning(true);
       if (startTimeRef.current === null) {
         startTimeRef.current = Date.now() - elapsedTime;
+      } else if (pauseTimeRef.current) {
+        const pauseDuration = Date.now() - pauseTimeRef.current;
+        startTimeRef.current += pauseDuration;
       }
       requestRef.current = requestAnimationFrame(updateTimer);
-    } else {
-      pauseTimer();
     }
   };
 
   const pauseTimer = () => {
     setIsRunning(false);
     cancelAnimationFrame(requestRef.current);
+    pauseTimeRef.current = Date.now();
   };
 
   const toggleTimer = () => {
-    setIsRunning(!isRunning);
+    if (isRunning) {
+      pauseTimer();
+    } else {
+      startTimer();
+    }
   };
 
   const handleTimerToggle = useEffect(() => {
@@ -67,7 +74,7 @@ export default ({ developmentRecipe }) => {
   };
 
   useEffect(() => {
-    if (isRunning) {
+    if (isRunning && currentStep?.initialAgitation) {
       const initialAgitationDuration = parseInt(currentStep.initialAgitation);
       if (initialAgitationDuration > 0) {
         tankRef.current.classList.add("animate-agitation");
@@ -77,7 +84,7 @@ export default ({ developmentRecipe }) => {
         );
       }
     }
-  }, [currentStepIndex, isRunning, currentStep.initialAgitation]);
+  }, [currentStepIndex, isRunning, currentStep?.initialAgitation]);
 
   // Cleanup on component unmount
   useEffect(() => {
@@ -89,7 +96,10 @@ export default ({ developmentRecipe }) => {
   return (
     <div className="Recipe">
       <h1>{developmentRecipe.name}</h1>
-      <Tank ref={tankRef} />
+      <div className="center">
+        <Tank ref={tankRef} />
+      </div>
+      <div>{secondsToDuration(parseInt(elapsedTime / 1000))}</div>
       <div>
         <button onClick={toggleTimer}>
           {isRunning

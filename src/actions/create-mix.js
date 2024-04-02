@@ -9,15 +9,17 @@ export default async ({ request, params }) => {
       const formData = await request.formData();
       const formObject = Object.fromEntries(formData.entries());
 
-      formObject.oneShot = formObject?.oneShot === "on";
-      formObject.temp = parseInt(formObject.temp, 10);
-
-      await putObjectInStore(db, "chemistry-recipes", {
+      await putObjectInStore(db, "mixes", {
         id: crypto.randomUUID(),
         ...formObject,
+        uses: 0,
+        createdAt: new Date().toISOString(),
+        name: `${formObject["amount"]}ml on ${new Date().toLocaleDateString(
+          "en-US"
+        )}`,
       });
     }
   }
 
-  return redirect("/");
+  return redirect("..");
 };

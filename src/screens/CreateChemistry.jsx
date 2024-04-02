@@ -1,6 +1,5 @@
 import Input from "../components/Input";
-import { createPortal } from "react-dom";
-import { redirect, Form, useNavigate } from "react-router-dom";
+import { Form, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 import "./CreateChemistry.css";
@@ -40,7 +39,7 @@ export default () => {
           required
         />
         <Input
-          name="oneshot"
+          name="oneShot"
           label="One-shot"
           type="checkbox"
           defaultChecked={true}

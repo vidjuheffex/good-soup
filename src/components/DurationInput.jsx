@@ -9,7 +9,7 @@ const createCompoundValue = (numeric, unit) => {
 const DurationInput = ({ disabled, name, required, ...props }, ref) => {
   const [numericValue, setNumericValue] = useState(undefined);
   const [unitValue, setUnitValue] = useState("d");
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState("");
 
   const handleNumericChange = (e) => {
     let val = e.target.value;
@@ -39,6 +39,7 @@ const DurationInput = ({ disabled, name, required, ...props }, ref) => {
           border: "none",
           position: "absolute",
         }}
+        readOnly
       />
       <input
         type="number"

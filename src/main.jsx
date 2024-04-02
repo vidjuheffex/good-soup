@@ -16,18 +16,24 @@ import Root from "./screens/Root";
 import CreateChemistry from "./screens/CreateChemistry";
 import CreateFilmStock from "./screens/CreateFilmStock";
 import CreateDevelopmentRecipe from "./screens/CreateDevelopmentRecipe";
+import CreateMix from "./screens/CreateMix";
 import StockRoot from "./screens/StockRoot";
 import RecipeRoot from "./screens/RecipeRoot";
+import MixRoot from "./screens/MixRoot";
 
 // loader
 import getDashboardData from "./loaders/get-dashboard-data";
 import getStockRecipes from "./loaders/get-stock-recipes";
 import getStockRecipe from "./loaders/get-stock-recipe";
+import getChemistry from "./loaders/get-chemistry";
+import getMix from "./loaders/get-mix";
 
 // actions
 import createChemistryRecipe from "./actions/create-chemistry-recipe";
 import createFilmStock from "./actions/create-film-stock";
 import createDevelopmentRecipe from "./actions/create-development-recipe";
+import createMix from "./actions/create-mix";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -54,8 +60,22 @@ const router = createBrowserRouter([
         ],
       },
       {
+        path: "mix/:mixid",
+        element: <MixRoot />,
+        loader: getMix,
+      },
+      {
         path: "chemistry/:chemistryid",
-        element: <div>a chem</div>,
+        element: <Outlet />,
+        loader: getChemistry,
+        id: "chemistry",
+        children: [
+          {
+            path: "create-mix",
+            action: createMix,
+            element: <CreateMix />,
+          },
+        ],
       },
       {
         path: "create-chemistry",

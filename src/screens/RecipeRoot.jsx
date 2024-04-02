@@ -1,6 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import Recipe from "./Recipe";
-//import "./RecipeRoot.css";
+
+// This essentially only exists to pass a key to a route and force a re-render.
 
 export default () => {
   const data = useLoaderData();
