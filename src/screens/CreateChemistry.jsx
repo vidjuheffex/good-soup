@@ -48,7 +48,7 @@ export default () => {
         {showReuseOptions && (
           <>
             <Input
-              name="shelflife"
+              name="shelfLife"
               label="Shelf Life"
               type="duration"
               required
