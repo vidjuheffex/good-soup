@@ -77,7 +77,12 @@ export default () => {
           required
         />
         <h3>Steps</h3>
-        <input type="hidden" name="steps" value={JSON.stringify(steps)} />
+        <input
+          type="hidden"
+          name="steps"
+          value={JSON.stringify(steps)}
+          readOnly
+        />
         {steps.map((step, index) => {
           return (
             <StepInput
@@ -103,7 +108,12 @@ export default () => {
           Add a step
         </button>
         <button type="submit">Submit</button>
-        <input type="hidden" name="filmStockId" value={params?.stockid} />
+        <input
+          readOnly
+          type="hidden"
+          name="filmStockId"
+          value={params?.stockid}
+        />
       </Form>
     </Modal>
   );

@@ -1,11 +1,23 @@
 .Dashboard {
-    display: flex;
+  display: flex;
+  height: 100%;
+
+  .mainarea {
+    overflow-y: auto;
     height: 100%;
+    flex: 1;
+  }
 
+  .mix-entry {
+    display: flex;
+    align-items: center;
+  }
 
-    .mainarea {
-        overflow-y: auto;
-        height: 100%;
-        flex: 1;
-    }
+  .bullet {
+    margin-left: 0.5rem;
+  }
+  .bullet.okay {
+    color: green;
+    font-size: 2rem;
+  }
 }

@@ -51,7 +51,7 @@ export default function CreateMix() {
           value={amount}
           onChange={handleInputChange}
         />
-        <input type="hidden" value={chemistry.id} name="chemistryId" />
+        <input type="hidden" value={chemistry.id} name="chemistryId" readOnly />
         {amount && (
           <div>
             <p>Chemicals Needed: {chemAmount.toFixed(2)} ml</p>

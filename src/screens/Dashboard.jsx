@@ -45,7 +45,11 @@ export default () => {
                 <NavLink
                   key={mix.id}
                   to={`/mix/${mix.id}`}
-                >{`•${mix.name}`}</NavLink>
+                  className="mix-entry"
+                >
+                  <span className="bullet okay">•</span>
+                  <span>{`${mix.name}`}</span>
+                </NavLink>
               ))}
             </Fragment>
           ))}

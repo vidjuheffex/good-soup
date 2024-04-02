@@ -13,12 +13,15 @@ export default ({ developmentRecipe }) => {
   const requestRef = useRef(null);
   const tankRef = useRef(null);
   const [progress, setProgress] = useState({});
+  const [isAgitating, setIsAgitating] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   const currentStep = developmentRecipe.steps[currentStepIndex];
 
   const startTimer = () => {
     if (!isRunning) {
       setIsRunning(true);
+      setIsPaused(false);
       if (startTimeRef.current === null) {
         startTimeRef.current = Date.now() - elapsedTime;
       } else if (pauseTimeRef.current) {
@@ -31,6 +34,7 @@ export default ({ developmentRecipe }) => {
 
   const pauseTimer = () => {
     setIsRunning(false);
+    setIsPaused(true);
     cancelAnimationFrame(requestRef.current);
     pauseTimeRef.current = Date.now();
   };
@@ -63,28 +67,53 @@ export default ({ developmentRecipe }) => {
 
     if (newElapsedTime >= currentStep.duration * 1000) {
       setIsRunning(false);
+      setIsPaused(false);
       setElapsedTime(0);
       setCurrentStepIndex((prevIndex) =>
         prevIndex + 1 < developmentRecipe.steps.length ? prevIndex + 1 : null
       );
       startTimeRef.current = null; // Reset for next step
+      pauseTimeRef.current = null; // Reset for next step
     } else {
       requestRef.current = requestAnimationFrame(updateTimer);
     }
   };
 
   useEffect(() => {
-    if (isRunning && currentStep?.initialAgitation) {
-      const initialAgitationDuration = parseInt(currentStep.initialAgitation);
-      if (initialAgitationDuration > 0) {
-        tankRef.current.classList.add("animate-agitation");
-        setTimeout(
-          () => tankRef.current.classList.remove("animate-agitation"),
-          initialAgitationDuration * 1000
-        );
+    if (isRunning) {
+      if (currentStep?.initialAgitation) {
+        const initialAgitationDuration = parseInt(currentStep.initialAgitation);
+
+        if (
+          initialAgitationDuration > 0 &&
+          elapsedTime < initialAgitationDuration * 1000
+        ) {
+          setIsAgitating(true);
+        } else {
+          setIsAgitating(false);
+        }
       }
     }
-  }, [currentStepIndex, isRunning, currentStep?.initialAgitation]);
+  }, [
+    elapsedTime,
+    currentStepIndex,
+    isRunning,
+    currentStep?.initialAgitation,
+    isAgitating,
+  ]);
+
+  // useEffect(() => {
+  //   if (isRunning && currentStep?.initialAgitation) {
+  //     const initialAgitationDuration = parseInt(currentStep.initialAgitation);
+  //     if (initialAgitationDuration > 0) {
+  //       tankRef.current.classList.add("animate-agitation");
+  //       setTimeout(
+  //         () => tankRef.current.classList.remove("animate-agitation"),
+  //         initialAgitationDuration * 1000
+  //       );
+  //     }
+  //   }
+  // }, [currentStepIndex, isRunning, currentStep?.initialAgitation]);
 
   // Cleanup on component unmount
   useEffect(() => {
@@ -97,7 +126,12 @@ export default ({ developmentRecipe }) => {
     <div className="Recipe">
       <h1>{developmentRecipe.name}</h1>
       <div className="center">
-        <Tank ref={tankRef} />
+        <Tank
+          ref={tankRef}
+          className={`${isAgitating ? "animate-agitation" : ""} ${
+            isPaused ? "paused" : ""
+          }`}
+        />
       </div>
       <div>{secondsToDuration(parseInt(elapsedTime / 1000))}</div>
       <div>
@@ -123,6 +157,20 @@ export default ({ developmentRecipe }) => {
               step.temp
             }°F for ${secondsToDuration(step.duration)}`}
           </h3>
+          <div>
+            Using mix:
+            <select disabled={step.chemistry.mixes.length === 0}>
+              {step.chemistry.mixes.length === 0 && (
+                <option value="">No mixes available</option>
+              )}
+              {step.chemistry.mixes &&
+                step.chemistry.mixes.map((mix) => (
+                  <option key={mix.id} value={mix.id}>
+                    {mix.name}
+                  </option>
+                ))}
+            </select>
+          </div>
           <progress value={progress[index] || 0} max={step.duration} />
         </div>
       ))}

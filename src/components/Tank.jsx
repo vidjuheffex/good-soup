@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import "./Tank.css";
 
-const Icon = (props, ref) => {
+const Icon = ({ className, ...props }, ref) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -10,7 +10,7 @@ const Icon = (props, ref) => {
       viewBox="0 0 501.77 621.58"
       width="100px"
       ref={ref}
-      className="Tank"
+      className={`Tank ${className}`}
       {...props}
     >
       <defs>

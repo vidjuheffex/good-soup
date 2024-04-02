@@ -6,5 +6,10 @@
 .Tank {
   &.animate-agitation {
     animation: rotate-tank 1s alternate infinite;
+    transition: transform 1s;
+  }
+
+  &.paused {
+    animation-play-state: paused;
   }
 }
