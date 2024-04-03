@@ -91,3 +91,38 @@ export function calculateAdjustedDuration(duration, exhaustionRate, uses) {
 
   return Math.round(adjustedDuration);
 }
+
+/**
+ * Takes a shelflife token and expands it into a human readable string
+ * @param {string} shelfLife - One of the following formats: "1d", "2w", "3m", "4y"
+ */
+export function shelfLifeToString(shelfLife) {
+  const unit = shelfLife.slice(-1);
+  const value = parseInt(shelfLife.slice(0, -1), 10);
+
+  switch (unit) {
+    case "m":
+      return `${value} month${value > 1 ? "s" : ""}`;
+    case "w":
+      return `${value} week${value > 1 ? "s" : ""}`;
+    case "d":
+      return `${value} day${value > 1 ? "s" : ""}`;
+    case "y":
+      return `${value} year${value > 1 ? "s" : ""}`;
+    default:
+      return "Unknown";
+  }
+}
+
+/**
+ * Converts a created date and shelf life to an expiration date
+ * @param {string} createdAt
+ * @param {string} shelfLife
+ * @returns {Date} expirationDate
+ */
+export function createdDateAndShelfLifeToExpirationDate(createdAt, shelfLife) {
+  // Calculate the expiration date
+  const shelfLifeInSeconds = shelfLifeToSeconds(shelfLife);
+  const createdAtDate = new Date(createdAt);
+  return new Date(createdAtDate.getTime() + shelfLifeInSeconds * 1000);
+}

@@ -27,4 +27,9 @@
     color: green;
     font-size: 2rem;
   }
+
+  .bullet.bad {
+    color: red;
+    font-size: 2rem;
+  }
 }

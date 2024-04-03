@@ -1,23 +1,28 @@
 import { useLoaderData } from "react-router-dom";
 import Content from "../components/Content";
-import { shelfLifeToSeconds } from "../utils";
+import {
+  createdDateAndShelfLifeToExpirationDate,
+  shelfLifeToString,
+} from "../utils";
 
 export default () => {
   const { mix } = useLoaderData();
 
   const data = [];
 
-  if (!mix.chemistry.oneShot) {
-    data.push({ Uses: mix.uses });
+  if (mix.notes) {
+    data.push({ Notes: mix.notes });
+  }
 
-    // Calculate the expiration date
-    const shelfLifeInSeconds = shelfLifeToSeconds(mix.chemistry.shelfLife);
-    const createdAtDate = new Date(mix.createdAt);
-    const expirationDate = new Date(
-      createdAtDate.getTime() + shelfLifeInSeconds * 1000
-    );
-    const expirationDateString = expirationDate.toLocaleDateString("en-US");
+  data.push({ Uses: mix.uses });
+
+  if (!mix.chemistry.oneShot) {
+    const expirationDateString = createdDateAndShelfLifeToExpirationDate(
+      mix.createdAt,
+      mix.chemistry.shelfLife
+    ).toLocaleDateString("en-US");
     data.push({ "Expiration Date": expirationDateString });
+    data.push({ "Shelf Life": shelfLifeToString(mix.chemistry.shelfLife) });
   }
 
   return (

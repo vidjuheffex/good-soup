@@ -37,17 +37,20 @@ export default ({ developmentRecipe }) => {
   // We 'post' with a form without navigation so we use useFetcher
   const fetcher = useFetcher();
 
-  // Adding useRef for adjusted durations
-  // this object will hold a map of step id to adjusted duration
-  // a ref is used since we don't want this updated on every render (when uses change),
-  // and instead only on mount and when the mixState changes;
+  // Calculate adjusted durations
+  //
+  // to avoid recalculating on chemistry use change, we capture the adjusted durations
+  // when we start the timer and use that for the duration of the step.
+  //
+  // the useEffect below will recalculate the adjusted durations when the mix changes
+  // and update the state.
+
   const [adjustedDurations, setAdjustedDurations] = useState({});
   const [capturedAdjustedDurations, setCapturedAdjustedDurations] = useState(
     {}
   );
 
   useEffect(() => {
-    // Calculate adjusted durations on mount and when mixState changes
     const adjustedDurations = developmentRecipe.steps.reduce((acc, step) => {
       const mix = step.chemistry.mixes.find(
         (mix) => mix.id === mixState[step.id]
@@ -69,6 +72,13 @@ export default ({ developmentRecipe }) => {
   }, [developmentRecipe.steps, mixState]);
 
   // Timer functions
+
+  /**
+   * Start the timer
+   * If the timer is not running, start the timer.
+   * If the timer is paused, resume the timer. If there is a pause time, adjust the start time
+   * to account for the time paused.
+   */
   const startTimer = () => {
     if (!isRunning) {
       setCapturedAdjustedDurations(adjustedDurations);
@@ -84,6 +94,10 @@ export default ({ developmentRecipe }) => {
     }
   };
 
+  /**
+   * Pause the timer
+   * Captures the paused time and cancels the requestAnimationFrame
+   */
   const pauseTimer = () => {
     setIsRunning(false);
     setIsPaused(true);
@@ -91,6 +105,13 @@ export default ({ developmentRecipe }) => {
     pauseTimeRef.current = Date.now();
   };
 
+  /**
+   * Toggle the timer
+   *
+   * If the timer is running, pause the timer.
+   * If the timer is paused, start the timer.
+   * If the timer is not started, start the timer and submit the form if a mix is selected.
+   */
   const toggleTimer = () => {
     if (isRunning) {
       pauseTimer();
@@ -112,6 +133,11 @@ export default ({ developmentRecipe }) => {
     }
   };
 
+  /**
+   * Update the timer
+   * Calculate the new elapsed time and update the progress bar.
+   * Base the comparison time on the adjusted duration if a mix is selected.
+   */
   const updateTimer = () => {
     const newElapsedTime = Date.now() - startTimeRef.current;
     setElapsedTime(newElapsedTime);
@@ -135,7 +161,14 @@ export default ({ developmentRecipe }) => {
     }
   };
 
-  // Mix selection and duration updates
+  /**
+   * Handle mix change
+   * Update the mix state when the user selects a different mix.
+   * This will trigger a recalculation of the adjusted durations.
+   *
+   * @param {object} event: The event object
+   * @param {string} stepId: The ID of the step
+   */
   const handleChangeMix = (event, stepId) => {
     setMixState({ ...mixState, [stepId]: event.target.value });
   };
@@ -143,37 +176,47 @@ export default ({ developmentRecipe }) => {
   // Handle agitation cycles
   useEffect(() => {
     if (isRunning) {
-      // Determine total elapsed time in the current step, adjusting for pauses.
-      const totalElapsedTimeInStep = elapsedTime / 1000; // Convert ms to seconds for easier calculation
+      const totalElapsedTimeInStep = elapsedTime / 1000; // Convert ms to seconds
 
-      // Handle initial agitation separately.
+      // If within the initial agitation period
       if (totalElapsedTimeInStep < currentStep.initialAgitation) {
         setIsAgitating(true);
         return;
       }
 
-      // Calculate the time elapsed after the initial agitation phase.
+      // Time elapsed after initial agitation phase, now including an initial rest period
       const timeAfterInitialAgitation =
         totalElapsedTimeInStep - currentStep.initialAgitation;
 
-      // Calculate the duration of one full agitation cycle (agitation time + rest time).
+      // Calculate the full cycle duration
       const fullCycleDuration =
         currentStep.agitationTime +
+        currentStep.agitationIntervals -
+        currentStep.agitationTime;
+
+      // Adjusted time to account for the initial rest period after the initial agitation
+      const timeAfterInitialAgitationAndRest =
+        timeAfterInitialAgitation -
         (currentStep.agitationIntervals - currentStep.agitationTime);
 
-      // Determine the current cycle phase (modulus operator helps determine the position in the current cycle).
-      const currentCyclePhase = timeAfterInitialAgitation % fullCycleDuration;
-
-      // Agitate if within the agitation period of the current cycle, otherwise rest.
-      setIsAgitating(currentCyclePhase < currentStep.agitationTime);
+      // We only start counting the regular cycles after the initial rest period has passed
+      if (timeAfterInitialAgitationAndRest < 0) {
+        // This means we're in the initial rest period
+        setIsAgitating(false);
+      } else {
+        // Now in the regular agitation/rest cycles
+        const currentCyclePhase =
+          timeAfterInitialAgitationAndRest % fullCycleDuration;
+        setIsAgitating(currentCyclePhase < currentStep.agitationTime);
+      }
     }
   }, [
     elapsedTime,
     currentStepIndex,
     isRunning,
-    currentStep.initialAgitation,
-    currentStep.agitationTime,
-    currentStep.agitationIntervals,
+    currentStep?.initialAgitation,
+    currentStep?.agitationTime,
+    currentStep?.agitationIntervals,
     isAgitating,
   ]);
 
@@ -200,7 +243,15 @@ export default ({ developmentRecipe }) => {
           }`}
         />
       </div>
-      <div>{secondsToDuration(parseInt(elapsedTime / 1000))}</div>
+      <div className="timer">
+        <span
+          className={`${isAgitating ? "animate-text-agitation" : ""} ${
+            isPaused ? "paused" : ""
+          }`}
+        >
+          {secondsToDuration(parseInt(elapsedTime / 1000))}
+        </span>
+      </div>
       <div>
         <button type="button" onClick={toggleTimer}>
           {status === "running"
@@ -255,7 +306,7 @@ export default ({ developmentRecipe }) => {
           <progress
             value={progress[index] || 0}
             max={
-              currentStep.chemistry.mixes.length > 0
+              step.chemistry.mixes.length > 0
                 ? capturedAdjustedDurations[step.id]
                 : step.duration
             }

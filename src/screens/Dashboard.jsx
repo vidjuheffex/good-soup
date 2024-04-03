@@ -13,6 +13,7 @@ import {
   NavLink,
   Link,
 } from "react-router-dom";
+import { createdDateAndShelfLifeToExpirationDate } from "../utils.js";
 
 export default () => {
   const data = useLoaderData();
@@ -36,21 +37,37 @@ export default () => {
       <SidebarMenu>
         <div className="SidebarMenuGroup">
           <h2 className="title">Chemistry</h2>
-          {data.chemistryRecipes.map((item) => (
-            <Fragment key={item.id}>
-              <NavLink key={item.id} to={`/chemistry/${item.id}/create-mix`}>
-                {`[+] Mix ${item.name}`}
+          {data.chemistryRecipes.map((recipe) => (
+            <Fragment key={recipe.id}>
+              <NavLink
+                key={recipe.id}
+                to={`/chemistry/${recipe.id}/create-mix`}
+              >
+                {`[+] Mix ${recipe.name}`}
               </NavLink>
-              {item.mixes.map((mix) => (
-                <NavLink
-                  key={mix.id}
-                  to={`/mix/${mix.id}`}
-                  className="mix-entry"
-                >
-                  <span className="bullet okay">•</span>
-                  <span className="mix-label">{`${mix.name}`}</span>
-                </NavLink>
-              ))}
+              {recipe.mixes.map((mix) => {
+                const expired =
+                  recipe.shelfLife && createdDateAndShelfLifeToExpirationDate
+                    ? new Date(mix.expires) < new Date()
+                    : false;
+                const exhausted = mix.uses > 0 && recipe.oneShot == true;
+                return (
+                  <NavLink
+                    key={mix.id}
+                    to={`/mix/${mix.id}`}
+                    className="mix-entry"
+                  >
+                    <span
+                      className={`bullet ${
+                        expired || exhausted ? "bad" : "okay"
+                      }`}
+                    >
+                      •
+                    </span>
+                    <span className="mix-label">{`${mix.name}`}</span>
+                  </NavLink>
+                );
+              })}
             </Fragment>
           ))}
           <Link to={`/create-chemistry`}>[+ Create New]</Link>

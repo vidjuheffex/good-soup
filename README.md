@@ -2,7 +2,7 @@
 
 Good Soup is a film developing helper primarily geared for folks home-developing. I created it to address a few shortcomings I found in some of the existing apps and gear, mainly:
 
-- Inability to easily track exhaustian rates and use.
+- Inability to easily track exhaustion rates and use.
 - Lack of helpers for mixing chemicals other than developers
 - Lackluster interfaces ranging from physical film-mixing hardware to applications that are inflexible.
 

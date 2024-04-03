@@ -3,7 +3,7 @@ import "./Input.css";
 import DurationInput from "./DurationInput";
 
 const Input = forwardRef(
-  ({ placeholder, label, type, autocomplete, ...props }, ref) => {
+  ({ placeholder, label, type, autoComplete, ...props }, ref) => {
     label = label || "Label";
     let Component =
       type == "textarea"
@@ -16,7 +16,7 @@ const Input = forwardRef(
       <label className="Input">
         <div>{label}</div>
         <Component
-          autocomplete={autocomplete || "off"}
+          autoComplete={autoComplete || "off"}
           ref={ref}
           placeholder={placeholder}
           type={type}
