@@ -14,7 +14,7 @@ export default () => {
   };
 
   return (
-    <Modal handleClose={() => navigate("/")}>
+    <Modal handleClose={() => navigate("..")}>
       <Form method="post">
         <h1>Create New Chemistry Recipe</h1>
         <Input

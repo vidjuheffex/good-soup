@@ -93,7 +93,7 @@ const router = createBrowserRouter(
       ],
     },
   ],
-  { basename: "/good-soup" }
+  { basename: "/good-soup/" }
 );
 
 ReactDOM.createRoot(document.getElementById("root")).render(

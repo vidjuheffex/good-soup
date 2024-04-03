@@ -7,7 +7,7 @@ import Modal from "../components/Modal";
 export default () => {
   const navigate = useNavigate();
   return (
-    <Modal handleClose={() => navigate("/")}>
+    <Modal handleClose={() => navigate("..")}>
       <Form method="post">
         <h1>Add Film Stock</h1>
         <Input

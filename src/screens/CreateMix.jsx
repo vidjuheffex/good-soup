@@ -39,7 +39,7 @@ export default function CreateMix() {
   };
 
   return (
-    <Modal handleClose={() => navigate("/")}>
+    <Modal handleClose={() => navigate("..")}>
       <Form method="post">
         <h1>Create Mix</h1>
         <Input
