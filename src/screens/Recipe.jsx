@@ -123,7 +123,7 @@ export default ({ developmentRecipe }) => {
         ? adjustedDurations[currentStep.id]
         : currentStep.duration;
 
-    if (newElapsedTime >= capturedAdjustedDurations[currentStep.id] * 1000) {
+    if (newElapsedTime >= comparisonTime * 1000) {
       setIsRunning(false);
       setIsPaused(false);
       setElapsedTime(0);
@@ -142,26 +142,40 @@ export default ({ developmentRecipe }) => {
     setMixState({ ...mixState, [stepId]: event.target.value });
   };
 
+  // Handle agitation cycles
   useEffect(() => {
     if (isRunning) {
-      if (currentStep?.initialAgitation) {
-        const initialAgitationDuration = parseInt(currentStep.initialAgitation);
+      // Determine total elapsed time in the current step, adjusting for pauses.
+      const totalElapsedTimeInStep = elapsedTime / 1000; // Convert ms to seconds for easier calculation
 
-        if (
-          initialAgitationDuration > 0 &&
-          elapsedTime < initialAgitationDuration * 1000
-        ) {
-          setIsAgitating(true);
-        } else {
-          setIsAgitating(false);
-        }
+      // Handle initial agitation separately.
+      if (totalElapsedTimeInStep < currentStep.initialAgitation) {
+        setIsAgitating(true);
+        return;
       }
+
+      // Calculate the time elapsed after the initial agitation phase.
+      const timeAfterInitialAgitation =
+        totalElapsedTimeInStep - currentStep.initialAgitation;
+
+      // Calculate the duration of one full agitation cycle (agitation time + rest time).
+      const fullCycleDuration =
+        currentStep.agitationTime +
+        (currentStep.agitationIntervals - currentStep.agitationTime);
+
+      // Determine the current cycle phase (modulus operator helps determine the position in the current cycle).
+      const currentCyclePhase = timeAfterInitialAgitation % fullCycleDuration;
+
+      // Agitate if within the agitation period of the current cycle, otherwise rest.
+      setIsAgitating(currentCyclePhase < currentStep.agitationTime);
     }
   }, [
     elapsedTime,
     currentStepIndex,
     isRunning,
-    currentStep?.initialAgitation,
+    currentStep.initialAgitation,
+    currentStep.agitationTime,
+    currentStep.agitationIntervals,
     isAgitating,
   ]);
 
@@ -224,21 +238,14 @@ export default ({ developmentRecipe }) => {
               <select
                 name={currentStepIndex === index ? "mix" : undefined}
                 value={mixState[step.id]}
-                disabled={
-                  step.chemistry.mixes.length === 0 ||
-                  startedSteps.includes(step.id)
-                }
+                disabled={startedSteps.includes(step.id)}
                 onChange={(ev) => handleChangeMix(ev, step.id)}
               >
-                {step.chemistry.mixes.length === 0 && (
-                  <option value="">No mixes available</option>
-                )}
-                {step.chemistry.mixes &&
-                  step.chemistry.mixes.map((mix) => (
-                    <option key={mix.id} value={mix.id}>
-                      {mix.name}
-                    </option>
-                  ))}
+                {step.chemistry.mixes.map((mix) => (
+                  <option key={mix.id} value={mix.id}>
+                    {mix.name}
+                  </option>
+                ))}
               </select>
               Uses:{" "}
               {`${
