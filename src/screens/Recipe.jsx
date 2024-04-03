@@ -5,6 +5,7 @@ import { secondsToDuration, calculateAdjustedDuration } from "../utils";
 import { useState, useRef, useEffect } from "react";
 
 export default ({ developmentRecipe }) => {
+  console.log(developmentRecipe);
   const formRef = useRef();
 
   // Track the Current Step
@@ -65,6 +66,7 @@ export default ({ developmentRecipe }) => {
       return acc;
     }, {});
 
+    console.log(adjustedDurations);
     setAdjustedDurations(adjustedDurations);
   }, [developmentRecipe.steps, mixState]);
 

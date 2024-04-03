@@ -76,7 +76,7 @@ export function shelfLifeToSeconds(shelfLife) {
  */
 export function calculateAdjustedDuration(duration, exhaustionRate, uses) {
   let adjustedDuration = duration;
-  if (!exhaustionRate || uses <= 1) return adjustedDuration;
+  if (!exhaustionRate || uses == 0) return adjustedDuration;
 
   const isPercentage = exhaustionRate.includes("%");
   const rateValue = parseFloat(exhaustionRate);
@@ -86,7 +86,7 @@ export function calculateAdjustedDuration(duration, exhaustionRate, uses) {
       adjustedDuration += (adjustedDuration * rateValue) / 100;
     }
   } else {
-    adjustedDuration += rateValue * (uses - 1);
+    adjustedDuration += rateValue * uses;
   }
 
   return Math.round(adjustedDuration);
