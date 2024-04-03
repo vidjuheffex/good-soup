@@ -1,8 +1,26 @@
-# React + Vite
+# Good Soup
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Good soup is a film developing helper primarily geared for folks home-developing. I created it to address a few shortcomings I found in some of the existing apps and gear, mainly:
 
-Currently, two official plugins are available:
+- Inability to easily track exhaustian rates and use.
+- Lack of helpers for mixing chemicals other than developers
+- Lackluster interfaces ranging from physical film-mixing hardware to applications that are inflexible.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
+
+- 🧪 Chemical recipes: Create your favorite brews
+- ⚗️ Mixes: Track your chemistry cabinet virtually, keeping tabs on expiration dates, exhaustion rates, and providing mixing ratio guidance.
+- 🎞️ Film stocks/Film groups: Track recipes alongside the filmstocks you use.
+- ⏱️ Timers: Track your timing and inversion cycles for every step of the developing process
+
+## Coming soon:
+
+- 🟢 Color status indicators: No longer a fixed green, this will turn yellow to red as you exhaust or expire your chemicals.
+- ✏️ Editing / Deleting: You make it, you keep it! (But pretty soon, yeah, you also edit and delete it.)
+- 🔄 Max re-use: Re-use will keep counting up, but will power the red dot to remind you to mix some fresh chems
+- 💦 Wash/Water steps: Debating between a magic chemical "water" that has amount set to Math.Infinity and can be used steps or adding a wash step as a seperate step from the chemical steps with options better suited for washing: "tank refill cycles" / "running water" etc.
+- 📝 Development details: Processing a 120 roll? How about fifteen 135 rolls? This affects exhaustion and we'll track it soon enough.
+
+## Coming later:
+
+- 🗣️ Gesture tracking / voice tracking: not sure which, depends which goes smoother to implement and gives a more reliable experience, but it would be nice not to get chemicals on your 'puter.

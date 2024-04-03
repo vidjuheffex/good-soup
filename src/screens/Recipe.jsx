@@ -116,6 +116,10 @@ export default ({ developmentRecipe }) => {
     const newElapsedTime = Date.now() - startTimeRef.current;
     setElapsedTime(newElapsedTime);
     setProgress({ ...progress, [currentStepIndex]: newElapsedTime / 1000 });
+    const comparisonTime =
+      currentStep.chemistry.mixes.length > 0
+        ? adjustedDurations[currentStep.id]
+        : currentStep.duration;
 
     if (newElapsedTime >= capturedAdjustedDurations[currentStep.id] * 1000) {
       setIsRunning(false);
@@ -204,40 +208,51 @@ export default ({ developmentRecipe }) => {
           <h3>
             {`Step ${index + 1} - ${step.chemistry.name} @ ${
               step.temp
-            }°F for ${secondsToDuration(step.duration)} (+${secondsToDuration(
-              (isRunning || isPaused) && currentStepIndex === index
-                ? capturedAdjustedDurations[step.id] - step.duration
-                : adjustedDurations[step.id] - step.duration
-            )})`}
+            }°F for ${secondsToDuration(step.duration)}`}
+            {step.chemistry.mixes.length > 0 &&
+              `(+${secondsToDuration(
+                (isRunning || isPaused) && currentStepIndex === index
+                  ? capturedAdjustedDurations[step.id] - step.duration
+                  : adjustedDurations[step.id] - step.duration
+              )})`}
           </h3>
-          <div>
-            Using mix:
-            <select
-              name={currentStepIndex === index ? "mix" : undefined}
-              value={mixState[step.id]}
-              disabled={
-                step.chemistry.mixes.length === 0 ||
-                startedSteps.includes(step.id)
-              }
-              onChange={(ev) => handleChangeMix(ev, step.id)}
-            >
-              {step.chemistry.mixes.length === 0 && (
-                <option value="">No mixes available</option>
-              )}
-              {step.chemistry.mixes &&
-                step.chemistry.mixes.map((mix) => (
-                  <option key={mix.id} value={mix.id}>
-                    {mix.name}
-                  </option>
-                ))}
-            </select>
-            Uses:{" "}
-            {`${
-              step.chemistry.mixes.find((mix) => mix.id === mixState[step.id])
-                ?.uses
-            } uses`}
-          </div>
-          <progress value={progress[index] || 0} max={step.duration} />
+          {step.chemistry.mixes.length > 0 && (
+            <div>
+              Using mix:
+              <select
+                name={currentStepIndex === index ? "mix" : undefined}
+                value={mixState[step.id]}
+                disabled={
+                  step.chemistry.mixes.length === 0 ||
+                  startedSteps.includes(step.id)
+                }
+                onChange={(ev) => handleChangeMix(ev, step.id)}
+              >
+                {step.chemistry.mixes.length === 0 && (
+                  <option value="">No mixes available</option>
+                )}
+                {step.chemistry.mixes &&
+                  step.chemistry.mixes.map((mix) => (
+                    <option key={mix.id} value={mix.id}>
+                      {mix.name}
+                    </option>
+                  ))}
+              </select>
+              Uses:{" "}
+              {`${
+                step.chemistry.mixes.find((mix) => mix.id === mixState[step.id])
+                  ?.uses
+              } uses`}
+            </div>
+          )}
+          <progress
+            value={progress[index] || 0}
+            max={
+              currentStep.chemistry.mixes.length > 0
+                ? capturedAdjustedDurations[step.id]
+                : step.duration
+            }
+          />
         </div>
       ))}
     </fetcher.Form>
