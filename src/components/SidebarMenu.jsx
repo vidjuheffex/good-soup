@@ -1,11 +1,11 @@
-import React from "react"
-import "./SidebarMenu.css"
-import SidebarMenuGroup from "./SidebarMenuGroup"
+import React from "react";
+import "./SidebarMenu.css";
+import SidebarMenuGroup from "./SidebarMenuGroup";
 
-export default ({children}) => {
-    return <>
+export default ({ children }) => {
+  return (
     <div className="SidebarMenu">
-        {children}
+      <div className="SidebarMenuCore">{children}</div>
     </div>
-    </>
-}
+  );
+};

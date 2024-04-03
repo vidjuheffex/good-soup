@@ -26,7 +26,7 @@ export default () => {
   }
 
   return (
-    <Content className="Content">
+    <Content>
       <h1>{mix.chemistry.name}</h1>
       <h2>{mix.name}</h2>
       <hr style={{ width: "100%" }} />

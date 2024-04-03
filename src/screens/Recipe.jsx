@@ -3,6 +3,7 @@ import "./Recipe.css";
 import Tank from "../components/Tank";
 import { secondsToDuration, calculateAdjustedDuration } from "../utils";
 import { useState, useRef, useEffect } from "react";
+import Content from "../components/Content";
 
 export default ({ developmentRecipe }) => {
   const formRef = useRef();
@@ -234,85 +235,88 @@ export default ({ developmentRecipe }) => {
     : "not_started";
 
   return (
-    <fetcher.Form method="post" className="Recipe" ref={formRef}>
-      <h1>{developmentRecipe.name}</h1>
-      <div className="center">
-        <Tank
-          className={`${isAgitating ? "animate-agitation" : ""} ${
-            isPaused ? "paused" : ""
-          }`}
-        />
-      </div>
-      <div className="timer">
-        <span
-          className={`${isAgitating ? "animate-text-agitation" : ""} ${
-            isPaused ? "paused" : ""
-          }`}
-        >
-          {secondsToDuration(parseInt(elapsedTime / 1000))}
-        </span>
-      </div>
-      <div>
-        <button type="button" onClick={toggleTimer}>
-          {status === "running"
-            ? "Pause"
-            : status === "paused"
-            ? "Resume"
-            : "Start Step"}
-        </button>
-        <button type="button">Skip to Next Step</button>
-        <button type="button">Restart Current Step</button>
-      </div>
-
-      <h2>Steps</h2>
-      {developmentRecipe.steps.map((step, index) => (
-        <div
-          key={step.id}
-          className={`step ${currentStepIndex === index ? "active" : ""}`}
-        >
-          <h3>
-            {`Step ${index + 1} - ${step.chemistry.name} @ ${
-              step.temp
-            }°F for ${secondsToDuration(step.duration)}`}
-            {step.chemistry.mixes.length > 0 &&
-              `(+${secondsToDuration(
-                (isRunning || isPaused) && currentStepIndex === index
-                  ? capturedAdjustedDurations[step.id] - step.duration
-                  : adjustedDurations[step.id] - step.duration
-              )})`}
-          </h3>
-          {step.chemistry.mixes.length > 0 && (
-            <div>
-              Using mix:
-              <select
-                name={currentStepIndex === index ? "mix" : undefined}
-                value={mixState[step.id]}
-                disabled={startedSteps.includes(step.id)}
-                onChange={(ev) => handleChangeMix(ev, step.id)}
-              >
-                {step.chemistry.mixes.map((mix) => (
-                  <option key={mix.id} value={mix.id}>
-                    {mix.name}
-                  </option>
-                ))}
-              </select>
-              Uses:{" "}
-              {`${
-                step.chemistry.mixes.find((mix) => mix.id === mixState[step.id])
-                  ?.uses
-              } uses`}
-            </div>
-          )}
-          <progress
-            value={progress[index] || 0}
-            max={
-              step.chemistry.mixes.length > 0
-                ? capturedAdjustedDurations[step.id]
-                : step.duration
-            }
+    <Content>
+      <fetcher.Form method="post" className="Recipe" ref={formRef}>
+        <h1>{developmentRecipe.name}</h1>
+        <div className="center">
+          <Tank
+            className={`${isAgitating ? "animate-agitation" : ""} ${
+              isPaused ? "paused" : ""
+            }`}
           />
         </div>
-      ))}
-    </fetcher.Form>
+        <div className="timer">
+          <span
+            className={`${isAgitating ? "animate-text-agitation" : ""} ${
+              isPaused ? "paused" : ""
+            }`}
+          >
+            {secondsToDuration(parseInt(elapsedTime / 1000))}
+          </span>
+        </div>
+        <div>
+          <button type="button" onClick={toggleTimer}>
+            {status === "running"
+              ? "Pause"
+              : status === "paused"
+              ? "Resume"
+              : "Start Step"}
+          </button>
+          <button type="button">Skip to Next Step</button>
+          <button type="button">Restart Current Step</button>
+        </div>
+
+        <h2>Steps</h2>
+        {developmentRecipe.steps.map((step, index) => (
+          <div
+            key={step.id}
+            className={`step ${currentStepIndex === index ? "active" : ""}`}
+          >
+            <h3>
+              {`Step ${index + 1} - ${step.chemistry.name} @ ${
+                step.temp
+              }°F for ${secondsToDuration(step.duration)}`}
+              {step.chemistry.mixes.length > 0 &&
+                `(+${secondsToDuration(
+                  (isRunning || isPaused) && currentStepIndex === index
+                    ? capturedAdjustedDurations[step.id] - step.duration
+                    : adjustedDurations[step.id] - step.duration
+                )})`}
+            </h3>
+            {step.chemistry.mixes.length > 0 && (
+              <div>
+                Using mix:
+                <select
+                  name={currentStepIndex === index ? "mix" : undefined}
+                  value={mixState[step.id]}
+                  disabled={startedSteps.includes(step.id)}
+                  onChange={(ev) => handleChangeMix(ev, step.id)}
+                >
+                  {step.chemistry.mixes.map((mix) => (
+                    <option key={mix.id} value={mix.id}>
+                      {mix.name}
+                    </option>
+                  ))}
+                </select>
+                Uses:{" "}
+                {`${
+                  step.chemistry.mixes.find(
+                    (mix) => mix.id === mixState[step.id]
+                  )?.uses
+                } uses`}
+              </div>
+            )}
+            <progress
+              value={progress[index] || 0}
+              max={
+                step.chemistry.mixes.length > 0
+                  ? capturedAdjustedDurations[step.id]
+                  : step.duration
+              }
+            />
+          </div>
+        ))}
+      </fetcher.Form>
+    </Content>
   );
 };

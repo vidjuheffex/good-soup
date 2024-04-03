@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData } from "react-router-dom";
+import { Outlet, useLoaderData, NavLink } from "react-router-dom";
 import SidebarMenu from "../components/SidebarMenu";
 import SidebarMenuGroup from "../components/SidebarMenuGroup";
 import "./StockRoot.css";
@@ -12,12 +12,13 @@ export default () => {
         <SidebarMenuGroup
           title="Recipes"
           createNewLink="create-development-recipe"
-          items={data.developmentRecipes.map((i) => ({
-            ...i,
-            label: i.name,
-            link: `${i.id}`,
-          }))}
-        ></SidebarMenuGroup>
+        >
+          {data.developmentRecipes.map((item) => (
+            <NavLink key={item.id} to={`${item.id}`}>
+              {item.name}
+            </NavLink>
+          ))}
+        </SidebarMenuGroup>
       </SidebarMenu>
       <Outlet />
     </div>

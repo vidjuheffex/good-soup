@@ -1,12 +1,7 @@
 .Dashboard {
   display: flex;
   height: 100%;
-
-  .mainarea {
-    overflow-y: auto;
-    height: 100%;
-    flex: 1;
-  }
+  overflow-y: hidden;
 
   .mix-entry {
     display: flex;
@@ -22,6 +17,7 @@
 
   .bullet {
     margin-left: 0.5rem;
+    margin-right: 0.25rem;
   }
   .bullet.okay {
     color: green;
