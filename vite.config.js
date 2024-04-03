@@ -14,6 +14,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      registerType: "autoUpdate",
       // generates 'manifest.webmanifest' file on build
       manifest: {
         // caches the assets/icons mentioned (assets/* includes all the assets present in your src/ directory)
