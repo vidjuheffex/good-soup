@@ -1,0 +1,17 @@
+{
+  "name": "Good Soup",
+  "short_name": "Soup",
+  "description": "Good Soup - Film Development Helper",
+  "scope": "/good-soup",
+  "start_url": "/good-soup/",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/good-soup/icon.png",
+      "type": "image/png",
+      "sizes": "700x700"
+    }
+  ]
+}
