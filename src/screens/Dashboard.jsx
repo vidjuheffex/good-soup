@@ -39,7 +39,7 @@ export default () => {
           {data.chemistryRecipes.map((item) => (
             <Fragment key={item.id}>
               <NavLink key={item.id} to={`/chemistry/${item.id}/create-mix`}>
-                {`Mix ${item.name}`}
+                {`[+] Mix ${item.name}`}
               </NavLink>
               {item.mixes.map((mix) => (
                 <NavLink
@@ -48,7 +48,7 @@ export default () => {
                   className="mix-entry"
                 >
                   <span className="bullet okay">•</span>
-                  <span>{`${mix.name}`}</span>
+                  <span className="mix-label">{`${mix.name}`}</span>
                 </NavLink>
               ))}
             </Fragment>

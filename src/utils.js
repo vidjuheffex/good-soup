@@ -64,3 +64,30 @@ export function shelfLifeToSeconds(shelfLife) {
       return 0;
   }
 }
+/**
+ * Adjust a duration based on the number of uses and an exhaustion rate.
+ *
+ * The exhaustion rate can be a percentage or a fixed value, expresssed
+ * as a string. eg. "10%" or "5s"
+ * @param {string} duration
+ * @param {string} exhaustionRate
+ * @param {number} uses
+ * @returns {number} seconds
+ */
+export function calculateAdjustedDuration(duration, exhaustionRate, uses) {
+  let adjustedDuration = duration;
+  if (!exhaustionRate || uses <= 1) return adjustedDuration;
+
+  const isPercentage = exhaustionRate.includes("%");
+  const rateValue = parseFloat(exhaustionRate);
+
+  if (isPercentage) {
+    for (let i = 1; i < uses; i++) {
+      adjustedDuration += (adjustedDuration * rateValue) / 100;
+    }
+  } else {
+    adjustedDuration += rateValue * (uses - 1);
+  }
+
+  return Math.round(adjustedDuration);
+}

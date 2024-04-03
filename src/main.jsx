@@ -33,6 +33,7 @@ import createChemistryRecipe from "./actions/create-chemistry-recipe";
 import createFilmStock from "./actions/create-film-stock";
 import createDevelopmentRecipe from "./actions/create-development-recipe";
 import createMix from "./actions/create-mix";
+import handleRecipeActions from "./actions/handle-recipe-actions";
 
 const router = createBrowserRouter(
   [
@@ -51,6 +52,7 @@ const router = createBrowserRouter(
             {
               path: ":recipeid",
               loader: getStockRecipe,
+              action: handleRecipeActions,
               element: <RecipeRoot />,
             },
             {

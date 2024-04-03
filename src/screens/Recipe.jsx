@@ -1,23 +1,72 @@
-import { useLoaderData } from "react-router-dom";
+import { useFetcher } from "react-router-dom";
 import "./Recipe.css";
 import Tank from "../components/Tank";
-import { secondsToDuration } from "../utils";
+import { secondsToDuration, calculateAdjustedDuration } from "../utils";
 import { useState, useRef, useEffect } from "react";
 
 export default ({ developmentRecipe }) => {
+  const formRef = useRef();
+
+  // Track the Current Step
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const currentStep = developmentRecipe.steps[currentStepIndex];
+
+  // Play state - You can actually deduce 3 state from this,
+  // isRunning, isPaused, and (isNotStarted)
   const [isRunning, setIsRunning] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Timer state (requestAnimationFrame based timer)
   const [elapsedTime, setElapsedTime] = useState(0);
   const startTimeRef = useRef(null);
   const pauseTimeRef = useRef(null);
   const requestRef = useRef(null);
-  const tankRef = useRef(null);
+
   const [progress, setProgress] = useState({});
   const [isAgitating, setIsAgitating] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
+  const [startedSteps, setStartedSteps] = useState([]);
 
-  const currentStep = developmentRecipe.steps[currentStepIndex];
+  // When we pull in the mixes, set the first one found as the default
+  const [mixState, setMixState] = useState(() =>
+    developmentRecipe.steps.reduce((state, step) => {
+      state[step.id] = step.chemistry.mixes[0] && step.chemistry.mixes[0].id;
+      return state;
+    }, {})
+  );
 
+  // We 'post' with a form without navigation so we use useFetcher
+  const fetcher = useFetcher();
+
+  // Adding useRef for adjusted durations
+  // this object will hold a map of step id to adjusted duration
+  // a ref is used since we don't want this updated on every render (when uses change),
+  // and instead only on mount and when the mixState changes
+  const adjustedDurationsRef = useRef({});
+  const [triggerRecalculation, setTriggerRecalculation] = useState(0);
+
+  useEffect(() => {
+    // Calculate adjusted durations on mount and when mixState changes
+    const adjustedDurations = developmentRecipe.steps.reduce((acc, step) => {
+      const mix = step.chemistry.mixes.find(
+        (mix) => mix.id === mixState[step.id]
+      );
+      if (mix) {
+        const exhaustionRate = step.chemistry.exhaustionRate;
+        const uses = mix.uses;
+        const duration = step.duration;
+        acc[step.id] = calculateAdjustedDuration(
+          duration,
+          exhaustionRate,
+          uses
+        );
+      }
+      return acc;
+    }, {});
+
+    adjustedDurationsRef.current = adjustedDurations;
+  }, [developmentRecipe.steps, mixState]);
+
+  // Timer functions
   const startTimer = () => {
     if (!isRunning) {
       setIsRunning(true);
@@ -43,29 +92,29 @@ export default ({ developmentRecipe }) => {
     if (isRunning) {
       pauseTimer();
     } else {
+      if (!isPaused) {
+        const form = formRef.current;
+        const formData = new FormData(form);
+        if (formData.get("mix")) {
+          // If there is a mix selected, submit the form
+          // after appending the action to the form data
+
+          formData.append("action", "consume-mix");
+          fetcher.submit(formData, { method: "POST" });
+        }
+
+        setStartedSteps([...startedSteps, currentStep.id]);
+      }
       startTimer();
     }
   };
-
-  const handleTimerToggle = useEffect(() => {
-    if (isRunning) {
-      if (startTimeRef.current === null) {
-        startTimeRef.current = Date.now() - elapsedTime;
-      }
-      requestRef.current = requestAnimationFrame(updateTimer);
-    } else {
-      cancelAnimationFrame(requestRef.current);
-    }
-
-    return () => cancelAnimationFrame(requestRef.current);
-  }, [isRunning]);
 
   const updateTimer = () => {
     const newElapsedTime = Date.now() - startTimeRef.current;
     setElapsedTime(newElapsedTime);
     setProgress({ ...progress, [currentStepIndex]: newElapsedTime / 1000 });
 
-    if (newElapsedTime >= currentStep.duration * 1000) {
+    if (newElapsedTime >= adjustedDurationsRef.current[currentStep.id] * 1000) {
       setIsRunning(false);
       setIsPaused(false);
       setElapsedTime(0);
@@ -77,6 +126,13 @@ export default ({ developmentRecipe }) => {
     } else {
       requestRef.current = requestAnimationFrame(updateTimer);
     }
+  };
+
+  // Mix selection and duration updates
+  const handleChangeMix = (event, stepId) => {
+    setMixState({ ...mixState, [stepId]: event.target.value });
+    // This will trigger the useEffect to recalculate the durations
+    setTriggerRecalculation((prev) => prev + 1);
   };
 
   useEffect(() => {
@@ -102,19 +158,6 @@ export default ({ developmentRecipe }) => {
     isAgitating,
   ]);
 
-  // useEffect(() => {
-  //   if (isRunning && currentStep?.initialAgitation) {
-  //     const initialAgitationDuration = parseInt(currentStep.initialAgitation);
-  //     if (initialAgitationDuration > 0) {
-  //       tankRef.current.classList.add("animate-agitation");
-  //       setTimeout(
-  //         () => tankRef.current.classList.remove("animate-agitation"),
-  //         initialAgitationDuration * 1000
-  //       );
-  //     }
-  //   }
-  // }, [currentStepIndex, isRunning, currentStep?.initialAgitation]);
-
   // Cleanup on component unmount
   useEffect(() => {
     return () => {
@@ -122,12 +165,17 @@ export default ({ developmentRecipe }) => {
     };
   }, []);
 
+  const status = isRunning
+    ? "running"
+    : elapsedTime > 0 && elapsedTime < currentStep.duration * 1000
+    ? "paused"
+    : "not_started";
+
   return (
-    <div className="Recipe">
+    <fetcher.Form method="post" className="Recipe" ref={formRef}>
       <h1>{developmentRecipe.name}</h1>
       <div className="center">
         <Tank
-          ref={tankRef}
           className={`${isAgitating ? "animate-agitation" : ""} ${
             isPaused ? "paused" : ""
           }`}
@@ -135,15 +183,15 @@ export default ({ developmentRecipe }) => {
       </div>
       <div>{secondsToDuration(parseInt(elapsedTime / 1000))}</div>
       <div>
-        <button onClick={toggleTimer}>
-          {isRunning
+        <button type="button" onClick={toggleTimer}>
+          {status === "running"
             ? "Pause"
-            : elapsedTime > 0 && elapsedTime < currentStep.duration * 1000
+            : status === "paused"
             ? "Resume"
             : "Start Step"}
         </button>
-        <button>Skip to Next Step</button>
-        <button>Restart Current Step</button>
+        <button type="button">Skip to Next Step</button>
+        <button type="button">Restart Current Step</button>
       </div>
 
       <h2>Steps</h2>
@@ -155,11 +203,21 @@ export default ({ developmentRecipe }) => {
           <h3>
             {`Step ${index + 1} - ${step.chemistry.name} @ ${
               step.temp
-            }°F for ${secondsToDuration(step.duration)}`}
+            }°F for ${secondsToDuration(step.duration)} (+${secondsToDuration(
+              adjustedDurationsRef.current[step.id] - step.duration
+            )})`}
           </h3>
           <div>
             Using mix:
-            <select disabled={step.chemistry.mixes.length === 0}>
+            <select
+              name={currentStepIndex === index ? "mix" : undefined}
+              value={mixState[step.id]}
+              disabled={
+                step.chemistry.mixes.length === 0 ||
+                startedSteps.includes(step.id)
+              }
+              onChange={(ev) => handleChangeMix(ev, step.id)}
+            >
               {step.chemistry.mixes.length === 0 && (
                 <option value="">No mixes available</option>
               )}
@@ -170,10 +228,15 @@ export default ({ developmentRecipe }) => {
                   </option>
                 ))}
             </select>
+            Uses:{" "}
+            {`${
+              step.chemistry.mixes.find((mix) => mix.id === mixState[step.id])
+                ?.uses
+            } uses`}
           </div>
           <progress value={progress[index] || 0} max={step.duration} />
         </div>
       ))}
-    </div>
+    </fetcher.Form>
   );
 };

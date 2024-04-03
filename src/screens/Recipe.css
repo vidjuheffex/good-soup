@@ -11,7 +11,7 @@
   }
 
   .step:not(.active) {
-    opacity: 0.5;
+    color: #ccc;
   }
 
   .center {
