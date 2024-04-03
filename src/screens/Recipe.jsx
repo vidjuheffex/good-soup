@@ -40,9 +40,11 @@ export default ({ developmentRecipe }) => {
   // Adding useRef for adjusted durations
   // this object will hold a map of step id to adjusted duration
   // a ref is used since we don't want this updated on every render (when uses change),
-  // and instead only on mount and when the mixState changes
-  const adjustedDurationsRef = useRef({});
-  const [triggerRecalculation, setTriggerRecalculation] = useState(0);
+  // and instead only on mount and when the mixState changes;
+  const [adjustedDurations, setAdjustedDurations] = useState({});
+  const [capturedAdjustedDurations, setCapturedAdjustedDurations] = useState(
+    {}
+  );
 
   useEffect(() => {
     // Calculate adjusted durations on mount and when mixState changes
@@ -63,12 +65,13 @@ export default ({ developmentRecipe }) => {
       return acc;
     }, {});
 
-    adjustedDurationsRef.current = adjustedDurations;
+    setAdjustedDurations(adjustedDurations);
   }, [developmentRecipe.steps, mixState]);
 
   // Timer functions
   const startTimer = () => {
     if (!isRunning) {
+      setCapturedAdjustedDurations(adjustedDurations);
       setIsRunning(true);
       setIsPaused(false);
       if (startTimeRef.current === null) {
@@ -114,7 +117,7 @@ export default ({ developmentRecipe }) => {
     setElapsedTime(newElapsedTime);
     setProgress({ ...progress, [currentStepIndex]: newElapsedTime / 1000 });
 
-    if (newElapsedTime >= adjustedDurationsRef.current[currentStep.id] * 1000) {
+    if (newElapsedTime >= capturedAdjustedDurations[currentStep.id] * 1000) {
       setIsRunning(false);
       setIsPaused(false);
       setElapsedTime(0);
@@ -131,8 +134,6 @@ export default ({ developmentRecipe }) => {
   // Mix selection and duration updates
   const handleChangeMix = (event, stepId) => {
     setMixState({ ...mixState, [stepId]: event.target.value });
-    // This will trigger the useEffect to recalculate the durations
-    setTriggerRecalculation((prev) => prev + 1);
   };
 
   useEffect(() => {
@@ -204,7 +205,9 @@ export default ({ developmentRecipe }) => {
             {`Step ${index + 1} - ${step.chemistry.name} @ ${
               step.temp
             }°F for ${secondsToDuration(step.duration)} (+${secondsToDuration(
-              adjustedDurationsRef.current[step.id] - step.duration
+              (isRunning || isPaused) && currentStepIndex === index
+                ? capturedAdjustedDurations[step.id] - step.duration
+                : adjustedDurations[step.id] - step.duration
             )})`}
           </h3>
           <div>
