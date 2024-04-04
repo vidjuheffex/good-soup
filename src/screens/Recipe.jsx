@@ -51,6 +51,49 @@ export default ({ developmentRecipe }) => {
     {}
   );
 
+  const audioContextRef = useRef(null);
+  const tickIntervalRef = useRef(null);
+
+  const startMetronome = () => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext ||
+        window.webkitAudioContext)();
+    }
+
+    const tick = () => {
+      const oscillator = audioContextRef.current.createOscillator();
+      const gainNode = audioContextRef.current.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContextRef.current.destination);
+
+      oscillator.type = "square"; // This gives a nice "tick" sound
+      gainNode.gain.value = 0.1; // Adjust volume
+      oscillator.start();
+      oscillator.stop(audioContextRef.current.currentTime + 0.1); // Stop after 0.1 seconds to make it a short "tick"
+    };
+
+    // Call `tick` function at regular intervals
+    tickIntervalRef.current = setInterval(tick, 1000); // Adjust interval for metronome speed
+  };
+
+  const stopMetronome = () => {
+    if (tickIntervalRef.current) {
+      clearInterval(tickIntervalRef.current);
+      tickIntervalRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    if (isAgitating && isRunning) {
+      startMetronome();
+    } else {
+      stopMetronome();
+    }
+
+    return () => stopMetronome(); // Cleanup on component unmount
+  }, [isAgitating, isRunning]);
+
   useEffect(() => {
     const adjustedDurations = developmentRecipe.steps.reduce((acc, step) => {
       const mix = step.chemistry.mixes.find(
@@ -228,6 +271,28 @@ export default ({ developmentRecipe }) => {
     };
   }, []);
 
+  const handleSkipStep = () => {
+    if (currentStepIndex < developmentRecipe.steps.length - 1) {
+      // Stop the timer
+      if (isRunning) {
+        setIsRunning(false);
+        cancelAnimationFrame(requestRef.current);
+      }
+
+      // Add current step to startedSteps if not already there
+      if (!startedSteps.includes(currentStep.id)) {
+        setStartedSteps([...startedSteps, currentStep.id]);
+      }
+
+      // Advance to the next step
+      setCurrentStepIndex(currentStepIndex + 1);
+      // Reset elapsedTime for the next step
+      setElapsedTime(0);
+      // Ensure that the metronome is stopped if it's active
+      stopMetronome();
+    }
+  };
+
   const status = isRunning
     ? "running"
     : elapsedTime > 0 && elapsedTime < currentStep.duration * 1000
@@ -240,30 +305,32 @@ export default ({ developmentRecipe }) => {
         <h1>{developmentRecipe.name}</h1>
         <div className="center">
           <Tank
-            className={`${isAgitating ? "animate-agitation" : ""} ${
-              isPaused ? "paused" : ""
-            }`}
+            className={`${
+              isAgitating && isRunning ? "animate-agitation" : ""
+            } ${!isRunning ? "paused" : ""}`}
           />
         </div>
         <h3 className="timer">
-          <span
-            className={`${isAgitating ? "animate-text-agitation" : ""} ${
-              isPaused ? "paused" : ""
-            }`}
-          >
-            {secondsToDuration(parseInt(elapsedTime / 1000))}
-          </span>
+          {secondsToDuration(parseInt(elapsedTime / 1000))}
         </h3>
-        <div>
-          <button type="button" onClick={toggleTimer}>
+        <div className="center">
+          <button type="button" onClick={toggleTimer} disabled={!currentStep}>
             {status === "running"
               ? "Pause"
               : status === "paused"
               ? "Resume"
               : "Start"}
           </button>
-          <button type="button">Skip Step</button>
-          <button type="button">Restart Step</button>
+          <button
+            type="button"
+            disabled={
+              currentStepIndex >= developmentRecipe.steps.length - 1 ||
+              !currentStep
+            }
+            onClick={handleSkipStep}
+          >
+            Skip Step
+          </button>
         </div>
 
         <h2>Steps</h2>

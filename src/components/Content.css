@@ -5,4 +5,5 @@
   padding: 8px;
   overflow-y: auto;
   align-items: flex-start;
+  width: 100%;
 }
