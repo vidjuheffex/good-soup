@@ -129,13 +129,30 @@ export function putObjectInStore(db, storeName, object) {
     const tx = db.transaction(storeName, "readwrite");
     const store = tx.objectStore(storeName);
 
-    store.put(object);
+    const request = store.put(object);
 
-    tx.oncomplete = function () {
+    request.onsuccess = () => {
       resolve();
     };
 
-    tx.onerror = function (event) {
+    request.onerror = (event) => {
+      reject(event.target.error);
+    };
+  });
+}
+
+export function deleteObjectFromStore(db, storeName, key) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(storeName, "readwrite");
+    const store = tx.objectStore(storeName);
+
+    const request = store.delete(key);
+
+    request.onsuccess = function () {
+      resolve();
+    };
+
+    request.onerror = function (event) {
       reject(event.target.error);
     };
   });

@@ -1,6 +1,7 @@
 import { useCallback, useRef } from "react";
 import Input from "./Input";
 import "./StepInput.css";
+import { DURATION_INPUT_PATTERN } from "../utils";
 
 export default ({
   chemistries,
@@ -13,14 +14,21 @@ export default ({
   defaultValues = {},
 }) => {
   function validateSave(event) {
-    const isValid = [
+    let isValid = true; // Assume all inputs are valid initially
+
+    [
       selectChemistryInputRef.current,
       durationInputRef.current,
       initialAgitationInputRef.current,
       agitationTimeInputRef.current,
       agitationIntervalsInputRef.current,
       tempInputRef.current,
-    ].every((ref) => ref && ref.checkValidity());
+    ].forEach((ref, index) => {
+      if (ref && !ref.checkValidity()) {
+        console.log(`Input ${index} is not valid: ${ref.validationMessage}`);
+        isValid = false; // Mark as invalid if any input fails validation
+      }
+    });
 
     if (isValid) {
       handleSave(event);
@@ -71,7 +79,7 @@ export default ({
             name="step-duration"
             label="Duration"
             placeholder="hh:mm:ss"
-            pattern="^((\d+:)?\d+:)?\d*$"
+            pattern={DURATION_INPUT_PATTERN}
             required
             ref={durationInputRef}
             defaultValue={defaultValues?.duration || ""}
@@ -81,7 +89,7 @@ export default ({
             label="Initial Agitation"
             type="text"
             placeholder="hh:mm:ss"
-            pattern="^((\d+:)?\d+:)?\d*$"
+            pattern={DURATION_INPUT_PATTERN}
             ref={initialAgitationInputRef}
             defaultValue={defaultValues?.initialAgitation || ""}
             required
@@ -90,8 +98,8 @@ export default ({
             name="step-agitation-time"
             label="Agitation Time"
             type="text"
-            pattern="^((\d+:)?\d+:)?\d*$"
-            placeholder="e.g. 4"
+            pattern={DURATION_INPUT_PATTERN}
+            placeholder="hh:mm:ss"
             required
             ref={agitationTimeInputRef}
             defaultValue={defaultValues?.agitationTime || ""}
@@ -101,7 +109,7 @@ export default ({
             label="Agitation Intervals"
             type="text"
             placeholder="hh:mm:ss"
-            pattern="^((\d+:)?\d+:)?\d*$"
+            pattern={DURATION_INPUT_PATTERN}
             required
             ref={agitationIntervalsInputRef}
             defaultValue={defaultValues?.agitationIntervals || ""}
@@ -113,7 +121,9 @@ export default ({
       )}
       {!editing && (
         <p>
-          {`Step ${index}`}
+          {`Step ${index}: ${
+            chemistries.find((chem) => chem.id == defaultValues.chemistry).name
+          }`}
           <button type="button" disabled={disabled} onClick={handleEditClick}>
             edit
           </button>

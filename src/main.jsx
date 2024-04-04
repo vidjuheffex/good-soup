@@ -34,6 +34,7 @@ import createFilmStock from "./actions/create-film-stock";
 import createDevelopmentRecipe from "./actions/create-development-recipe";
 import createMix from "./actions/create-mix";
 import handleRecipeActions from "./actions/handle-recipe-actions";
+import deleteMix from "./actions/delete-mix";
 
 const router = createBrowserRouter(
   [
@@ -89,6 +90,10 @@ const router = createBrowserRouter(
           path: "create-film-stock",
           element: <CreateFilmStock />,
           action: createFilmStock,
+        },
+        {
+          path: "delete-mix",
+          action: deleteMix,
         },
       ],
     },

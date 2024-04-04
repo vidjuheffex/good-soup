@@ -245,7 +245,7 @@ export default ({ developmentRecipe }) => {
             }`}
           />
         </div>
-        <div className="timer">
+        <h3 className="timer">
           <span
             className={`${isAgitating ? "animate-text-agitation" : ""} ${
               isPaused ? "paused" : ""
@@ -253,24 +253,28 @@ export default ({ developmentRecipe }) => {
           >
             {secondsToDuration(parseInt(elapsedTime / 1000))}
           </span>
-        </div>
+        </h3>
         <div>
           <button type="button" onClick={toggleTimer}>
             {status === "running"
               ? "Pause"
               : status === "paused"
               ? "Resume"
-              : "Start Step"}
+              : "Start"}
           </button>
-          <button type="button">Skip to Next Step</button>
-          <button type="button">Restart Current Step</button>
+          <button type="button">Skip Step</button>
+          <button type="button">Restart Step</button>
         </div>
 
         <h2>Steps</h2>
         {developmentRecipe.steps.map((step, index) => (
           <div
             key={step.id}
-            className={`step ${currentStepIndex === index ? "active" : ""}`}
+            className={`step ${currentStepIndex === index ? "active" : ""} ${
+              startedSteps.includes(step.id) && currentStepIndex !== index
+                ? "done"
+                : ""
+            }`}
           >
             <h3>
               {`Step ${index + 1} - ${step.chemistry.name} @ ${

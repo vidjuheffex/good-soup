@@ -1,8 +1,14 @@
 .CreateDevelopmentRecipe {
+  display: flex;
+  flex-direction: column;
 
-    padding: 8px; 
-    box-sizing: border-box;
-    .step {
-        border: 1px dashed black
-    }
+  padding: 8px;
+  box-sizing: border-box;
+
+  .stepsSection {
+    position: relative;
+  }
+  .step {
+    border: 1px dashed black;
+  }
 }

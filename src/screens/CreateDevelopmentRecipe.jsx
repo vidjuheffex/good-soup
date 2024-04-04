@@ -76,13 +76,25 @@ export default () => {
           placeholder="eg. Rodinal 1:50"
           required
         />
-        <h3>Steps</h3>
-        <input
-          type="hidden"
-          name="steps"
-          value={JSON.stringify(steps)}
-          readOnly
-        />
+        <div className="stepsSection">
+          <h3>Steps</h3>
+          <input
+            tabIndex={-1}
+            name="steps"
+            value={steps.length > 0 ? JSON.stringify(steps) : ""}
+            required
+            onChange={() => {}}
+            style={{
+              height: "1px",
+              width: "100%",
+              opacity: 0,
+              display: "block",
+              pointerEvents: "none",
+              border: "none",
+              position: "absolute",
+            }}
+          />
+        </div>
         {steps.map((step, index) => {
           return (
             <StepInput
@@ -107,7 +119,9 @@ export default () => {
         <button type="button" onClick={addStep} disabled={editingStep}>
           Add a step
         </button>
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={editingStep}>
+          Submit
+        </button>
         <input
           readOnly
           type="hidden"

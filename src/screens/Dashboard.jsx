@@ -35,9 +35,9 @@ export default () => {
   return (
     <div className="Dashboard">
       <SidebarMenu>
-        <SidebarMenuGroup title="Chemistry" createNewLink="create-chemsitry">
+        <SidebarMenuGroup title="Chemistry" createNewLink="create-chemistry">
           {data.chemistryRecipes.map((recipe) => (
-            <Fragment key={recipe.id}>
+            <div className="chemistryGroup" key={recipe.id}>
               <NavLink
                 key={recipe.id}
                 to={`/chemistry/${recipe.id}/create-mix`}
@@ -67,7 +67,7 @@ export default () => {
                   </NavLink>
                 );
               })}
-            </Fragment>
+            </div>
           ))}
         </SidebarMenuGroup>
         <SidebarMenuGroup title="Development" createNewLink="create-film-stock">

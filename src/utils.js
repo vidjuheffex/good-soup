@@ -4,23 +4,18 @@
  * @returns {string} duration
  */
 export function secondsToDuration(seconds) {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const remainingSeconds = seconds % 60;
-  let parts = [];
-  if (hours > 0) parts.push(hours);
-  if (hours > 0 || minutes > 0 || seconds < 60)
-    parts.push(`${minutes < 10 && hours ? `0${minutes}` : minutes}`);
-  if (seconds >= 60)
-    parts.push(
-      `${
-        remainingSeconds < 10 && (minutes || hours)
-          ? `0${remainingSeconds}`
-          : remainingSeconds
-      }`
-    );
-  if (seconds < 60) return `${remainingSeconds}`;
-  return parts.join(":");
+  // Calculate hours, minutes, and seconds
+  let hours = Math.floor(seconds / 3600);
+  let minutes = Math.floor((seconds % 3600) / 60);
+  let remainingSeconds = seconds % 60;
+
+  // Format hours, minutes, and seconds to always have two digits
+  hours = hours.toString().padStart(2, "0");
+  minutes = minutes.toString().padStart(2, "0");
+  remainingSeconds = remainingSeconds.toString().padStart(2, "0");
+
+  // Concatenate hours, minutes, and seconds with colon separators
+  return `${hours}:${minutes}:${remainingSeconds}`;
 }
 
 /**
@@ -126,3 +121,5 @@ export function createdDateAndShelfLifeToExpirationDate(createdAt, shelfLife) {
   const createdAtDate = new Date(createdAt);
   return new Date(createdAtDate.getTime() + shelfLifeInSeconds * 1000);
 }
+
+export const DURATION_INPUT_PATTERN = "^:?((\\d+:)?\\d+:)?\\d+$";

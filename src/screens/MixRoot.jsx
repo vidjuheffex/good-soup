@@ -1,9 +1,11 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, Form } from "react-router-dom";
 import Content from "../components/Content";
 import {
   createdDateAndShelfLifeToExpirationDate,
   shelfLifeToString,
 } from "../utils";
+
+import "./MixRoot.css";
 
 export default () => {
   const { mix } = useLoaderData();
@@ -26,7 +28,7 @@ export default () => {
   }
 
   return (
-    <Content>
+    <Content className="MixRoot">
       <h1>{mix.chemistry.name}</h1>
       <h2>{mix.name}</h2>
       <hr style={{ width: "100%" }} />
@@ -36,6 +38,21 @@ export default () => {
           <p>{Object.values(item)[0]}</p>
         </div>
       ))}
+      <Form
+        method="DELETE"
+        action="/delete-mix"
+        onSubmit={(event) => {
+          const userconfirm = confirm(
+            "Are you sure you want to dispose of this mix?"
+          );
+          if (!userconfirm) {
+            event.preventDefault();
+          }
+        }}
+      >
+        <input type="hidden" name="id" value={mix.id} readOnly />
+        <button className="dispose">Dispose of Responsibly</button>
+      </Form>
     </Content>
   );
 };

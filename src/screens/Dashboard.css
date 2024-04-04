@@ -15,17 +15,23 @@
     }
   }
 
+  .chemistryGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
   .bullet {
     margin-left: 0.5rem;
     margin-right: 0.25rem;
+    font-size: 2rem;
+    line-height: 1.5rem;
   }
   .bullet.okay {
     color: green;
-    font-size: 2rem;
   }
 
   .bullet.bad {
     color: red;
-    font-size: 2rem;
   }
 }

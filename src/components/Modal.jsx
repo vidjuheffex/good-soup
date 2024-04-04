@@ -8,10 +8,9 @@ export default ({ children, handleClose }) =>
         className="ModalWindow"
         onClick={(e) => {
           e.stopPropagation();
-          e.PreventDefault();
         }}
       >
-        <button className="ModalX" onClick={handleClose}>
+        <button className="ModalX" type="button" onClick={handleClose}>
           X
         </button>
         {children}
