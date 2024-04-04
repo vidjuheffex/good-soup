@@ -3,7 +3,7 @@ import Recipe from "./Recipe";
 
 // This essentially only exists to pass a key to a route and force a re-render.
 
-export default () => {
+export default function RecipeRoot() {
   const data = useLoaderData();
 
   return (
@@ -12,4 +12,4 @@ export default () => {
       key={data.developmentRecipe.id}
     />
   );
-};
+}

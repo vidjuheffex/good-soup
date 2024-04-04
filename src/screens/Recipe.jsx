@@ -5,7 +5,7 @@ import { secondsToDuration, calculateAdjustedDuration } from "../utils";
 import { useState, useRef, useEffect } from "react";
 import Content from "../components/Content";
 
-export default ({ developmentRecipe }) => {
+export default function Recipe({ developmentRecipe }) {
   const formRef = useRef();
 
   // Track the Current Step
@@ -32,7 +32,7 @@ export default ({ developmentRecipe }) => {
     developmentRecipe.steps.reduce((state, step) => {
       state[step.id] = step.chemistry.mixes[0] && step.chemistry.mixes[0].id;
       return state;
-    }, {})
+    }, {}),
   );
 
   // We 'post' with a form without navigation so we use useFetcher
@@ -48,7 +48,7 @@ export default ({ developmentRecipe }) => {
 
   const [adjustedDurations, setAdjustedDurations] = useState({});
   const [capturedAdjustedDurations, setCapturedAdjustedDurations] = useState(
-    {}
+    {},
   );
 
   const audioContextRef = useRef(null);
@@ -56,8 +56,7 @@ export default ({ developmentRecipe }) => {
 
   const startMetronome = () => {
     if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext ||
-        window.webkitAudioContext)();
+      audioContextRef.current = new window.AudioContext();
     }
 
     const tick = () => {
@@ -97,7 +96,7 @@ export default ({ developmentRecipe }) => {
   useEffect(() => {
     const adjustedDurations = developmentRecipe.steps.reduce((acc, step) => {
       const mix = step.chemistry.mixes.find(
-        (mix) => mix.id === mixState[step.id]
+        (mix) => mix.id === mixState[step.id],
       );
       if (mix) {
         const exhaustionRate = step.chemistry.exhaustionRate;
@@ -106,7 +105,7 @@ export default ({ developmentRecipe }) => {
         acc[step.id] = calculateAdjustedDuration(
           duration,
           exhaustionRate,
-          uses
+          uses,
         );
       }
       return acc;
@@ -196,7 +195,7 @@ export default ({ developmentRecipe }) => {
       setIsPaused(false);
       setElapsedTime(0);
       setCurrentStepIndex((prevIndex) =>
-        prevIndex + 1 < developmentRecipe.steps.length ? prevIndex + 1 : null
+        prevIndex + 1 < developmentRecipe.steps.length ? prevIndex + 1 : null,
       );
       startTimeRef.current = null; // Reset for next step
       pauseTimeRef.current = null; // Reset for next step
@@ -296,8 +295,8 @@ export default ({ developmentRecipe }) => {
   const status = isRunning
     ? "running"
     : elapsedTime > 0 && elapsedTime < currentStep.duration * 1000
-    ? "paused"
-    : "not_started";
+      ? "paused"
+      : "not_started";
 
   return (
     <Content>
@@ -318,8 +317,8 @@ export default ({ developmentRecipe }) => {
             {status === "running"
               ? "Pause"
               : status === "paused"
-              ? "Resume"
-              : "Start"}
+                ? "Resume"
+                : "Start"}
           </button>
           <button
             type="button"
@@ -351,7 +350,7 @@ export default ({ developmentRecipe }) => {
                 `(+${secondsToDuration(
                   (isRunning || isPaused) && currentStepIndex === index
                     ? capturedAdjustedDurations[step.id] - step.duration
-                    : adjustedDurations[step.id] - step.duration
+                    : adjustedDurations[step.id] - step.duration,
                 )})`}
             </h3>
             {step.chemistry.mixes.length > 0 && (
@@ -372,7 +371,7 @@ export default ({ developmentRecipe }) => {
                 Uses:{" "}
                 {`${
                   step.chemistry.mixes.find(
-                    (mix) => mix.id === mixState[step.id]
+                    (mix) => mix.id === mixState[step.id],
                   )?.uses
                 } uses`}
               </div>
@@ -390,4 +389,4 @@ export default ({ developmentRecipe }) => {
       </fetcher.Form>
     </Content>
   );
-};
+}

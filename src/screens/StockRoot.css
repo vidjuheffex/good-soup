@@ -1,4 +1,16 @@
 .StockRoot {
   display: flex;
   flex: 1;
+
+  .renameForm {
+    display: flex;
+  }
+
+  .stockControls {
+    display: flex;
+  }
+
+  .delete {
+    color: red;
+  }
 }

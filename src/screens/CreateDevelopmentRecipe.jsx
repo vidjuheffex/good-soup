@@ -11,7 +11,7 @@ import "./CreateDevelopmentRecipe.css";
 import Modal from "../components/Modal";
 import StepInput from "../components/StepInput";
 
-export default () => {
+export default function CreateDevelopmentRecipe() {
   const navigate = useNavigate();
   const params = useParams();
   const data = useRouteLoaderData("dashboard");
@@ -131,4 +131,4 @@ export default () => {
       </Form>
     </Modal>
   );
-};
+}

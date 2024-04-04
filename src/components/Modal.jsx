@@ -1,20 +1,16 @@
 import { createPortal } from "react-dom";
 import "./Modal.css";
 
-export default ({ children, handleClose }) =>
-  createPortal(
-    <div className="Modal" onClick={handleClose}>
-      <div
-        className="ModalWindow"
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
+export default function Modal({ children, handleClose }) {
+  return createPortal(
+    <div className="Modal">
+      <div className="ModalWindow">
         <button className="ModalX" type="button" onClick={handleClose}>
           X
         </button>
         {children}
       </div>
     </div>,
-    document.body
+    document.body,
   );
+}

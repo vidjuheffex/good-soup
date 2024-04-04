@@ -5,7 +5,7 @@ import { useState } from "react";
 import "./CreateChemistry.css";
 import Modal from "../components/Modal";
 
-export default () => {
+export default function CreateChemistry() {
   const navigate = useNavigate();
   const [showReuseOptions, setShowReuseOptions] = useState(false);
 
@@ -74,4 +74,4 @@ export default () => {
       </Form>
     </Modal>
   );
-};
+}
