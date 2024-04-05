@@ -6,8 +6,10 @@
     display: flex;
   }
 
-  .stockControls {
+  .controls {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
   }
 
   .delete {

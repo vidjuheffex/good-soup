@@ -20,6 +20,8 @@ import CreateMix from "./screens/CreateMix";
 import StockRoot from "./screens/StockRoot";
 import RecipeRoot from "./screens/RecipeRoot";
 import MixRoot from "./screens/MixRoot";
+import ChemistryLayout from "./screens/ChemistryLayout";
+import ChemistryIndex from "./screens/ChemistryIndex";
 
 // loader
 import getDashboardData from "./loaders/get-dashboard-data";
@@ -37,73 +39,85 @@ import handleRecipeActions from "./actions/handle-recipe-actions";
 import deleteMix from "./actions/delete-mix";
 import deleteFilmStock from "./actions/delete-film-stock";
 import renameFilmStock from "./actions/rename-film-stock";
+import renameDevelopmentRecipe from "./actions/rename-development-recipe";
 
 const router = createBrowserRouter(
   [
     {
       path: "/",
-      element: <Dashboard />,
-      loader: getDashboardData,
-      id: "dashboard",
+      element: <Root />,
       children: [
         {
-          path: "stock/:stockid",
-          element: <StockRoot />,
-          loader: getStockRecipes,
-          id: "stock-route",
+          path: "/",
+          element: <Dashboard />,
+          loader: getDashboardData,
+          id: "dashboard",
           children: [
             {
-              path: ":recipeid",
+              path: "stock/:stockid",
+              element: <StockRoot />,
+              loader: getStockRecipes,
+              id: "stock-route",
+              children: [
+                {
+                  path: "create-development-recipe",
+                  element: <CreateDevelopmentRecipe />,
+                  action: createDevelopmentRecipe,
+                },
+              ],
+            },
+            {
+              path: "stock/:stockid/:recipeid",
               loader: getStockRecipe,
               action: handleRecipeActions,
               element: <RecipeRoot />,
             },
+
             {
-              path: "create-development-recipe",
-              element: <CreateDevelopmentRecipe />,
-              action: createDevelopmentRecipe,
+              path: "chemistry/:chemistryid",
+              element: <ChemistryLayout />,
+              loader: getChemistry,
+              id: "chemistry-route",
+              children: [
+                {
+                  path: "create-mix",
+                  action: createMix,
+                  element: <CreateMix />,
+                },
+              ],
+            },
+            {
+              path: "mix/:mixid",
+              element: <MixRoot />,
+              loader: getMix,
+            },
+            {
+              path: "create-chemistry",
+              element: <CreateChemistry />,
+              action: createChemistryRecipe,
+            },
+            {
+              path: "create-film-stock",
+              element: <CreateFilmStock />,
+              action: createFilmStock,
+            },
+            {
+              path: "delete-mix",
+              action: deleteMix,
+            },
+            {
+              path: "delete-film-stock",
+              action: deleteFilmStock,
+            },
+            {
+              path: "rename-film-stock",
+              action: renameFilmStock,
+            },
+            {
+              path: "rename-development-recipe",
+              action: renameDevelopmentRecipe,
             },
           ],
-        },
-        {
-          path: "mix/:mixid",
-          element: <MixRoot />,
-          loader: getMix,
-        },
-        {
-          path: "chemistry/:chemistryid",
-          element: <Outlet />,
-          loader: getChemistry,
-          id: "chemistry",
-          children: [
-            {
-              path: "create-mix",
-              action: createMix,
-              element: <CreateMix />,
-            },
-          ],
-        },
-        {
-          path: "create-chemistry",
-          element: <CreateChemistry />,
-          action: createChemistryRecipe,
-        },
-        {
-          path: "create-film-stock",
-          element: <CreateFilmStock />,
-          action: createFilmStock,
-        },
-        {
-          path: "delete-mix",
-          action: deleteMix,
-        },
-        {
-          path: "delete-film-stock",
-          action: deleteFilmStock,
-        },
-        {
-          path: "rename-film-stock",
-          action: renameFilmStock,
         },
       ],
     },

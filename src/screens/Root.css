@@ -1,0 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+
+.Root {
+  header {
+    color: var(--white);
+    background: var(--black);
+    font-family: Raleway, sans-serif;
+    padding: var(--size-2);
+  }
+  height: 100%;
+  overflow: hidden;
+}

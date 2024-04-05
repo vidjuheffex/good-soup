@@ -1,9 +1,10 @@
-import { useFetcher } from "react-router-dom";
+import { useFetcher, Link, useParams } from "react-router-dom";
 import "./Recipe.css";
 import Tank from "../components/Tank";
 import { secondsToDuration, calculateAdjustedDuration } from "../utils";
 import { useState, useRef, useEffect } from "react";
 import Content from "../components/Content";
+import RenameableTitle from "../components/RenameableTitle";
 
 export default function Recipe({ developmentRecipe }) {
   const formRef = useRef();
@@ -32,11 +33,12 @@ export default function Recipe({ developmentRecipe }) {
     developmentRecipe.steps.reduce((state, step) => {
       state[step.id] = step.chemistry.mixes[0] && step.chemistry.mixes[0].id;
       return state;
-    }, {}),
+    }, {})
   );
 
   // We 'post' with a form without navigation so we use useFetcher
   const fetcher = useFetcher();
+  const params = useParams();
 
   // Calculate adjusted durations
   //
@@ -48,7 +50,7 @@ export default function Recipe({ developmentRecipe }) {
 
   const [adjustedDurations, setAdjustedDurations] = useState({});
   const [capturedAdjustedDurations, setCapturedAdjustedDurations] = useState(
-    {},
+    {}
   );
 
   const audioContextRef = useRef(null);
@@ -96,7 +98,7 @@ export default function Recipe({ developmentRecipe }) {
   useEffect(() => {
     const adjustedDurations = developmentRecipe.steps.reduce((acc, step) => {
       const mix = step.chemistry.mixes.find(
-        (mix) => mix.id === mixState[step.id],
+        (mix) => mix.id === mixState[step.id]
       );
       if (mix) {
         const exhaustionRate = step.chemistry.exhaustionRate;
@@ -105,7 +107,7 @@ export default function Recipe({ developmentRecipe }) {
         acc[step.id] = calculateAdjustedDuration(
           duration,
           exhaustionRate,
-          uses,
+          uses
         );
       }
       return acc;
@@ -195,7 +197,7 @@ export default function Recipe({ developmentRecipe }) {
       setIsPaused(false);
       setElapsedTime(0);
       setCurrentStepIndex((prevIndex) =>
-        prevIndex + 1 < developmentRecipe.steps.length ? prevIndex + 1 : null,
+        prevIndex + 1 < developmentRecipe.steps.length ? prevIndex + 1 : null
       );
       startTimeRef.current = null; // Reset for next step
       pauseTimeRef.current = null; // Reset for next step
@@ -295,13 +297,20 @@ export default function Recipe({ developmentRecipe }) {
   const status = isRunning
     ? "running"
     : elapsedTime > 0 && elapsedTime < currentStep.duration * 1000
-      ? "paused"
-      : "not_started";
+    ? "paused"
+    : "not_started";
 
   return (
     <Content>
+      <Link to={`/stock/${params.stockid}`}>Back to Recipes</Link>
+      <div className="controls">
+        <RenameableTitle
+          title={developmentRecipe.name}
+          id={developmentRecipe.id}
+          action="/rename-development-recipe"
+        />
+      </div>
       <fetcher.Form method="post" className="Recipe" ref={formRef}>
-        <h1>{developmentRecipe.name}</h1>
         <div className="center">
           <Tank
             className={`${
@@ -317,8 +326,8 @@ export default function Recipe({ developmentRecipe }) {
             {status === "running"
               ? "Pause"
               : status === "paused"
-                ? "Resume"
-                : "Start"}
+              ? "Resume"
+              : "Start"}
           </button>
           <button
             type="button"
@@ -350,7 +359,7 @@ export default function Recipe({ developmentRecipe }) {
                 `(+${secondsToDuration(
                   (isRunning || isPaused) && currentStepIndex === index
                     ? capturedAdjustedDurations[step.id] - step.duration
-                    : adjustedDurations[step.id] - step.duration,
+                    : adjustedDurations[step.id] - step.duration
                 )})`}
             </h3>
             {step.chemistry.mixes.length > 0 && (
@@ -371,7 +380,7 @@ export default function Recipe({ developmentRecipe }) {
                 Uses:{" "}
                 {`${
                   step.chemistry.mixes.find(
-                    (mix) => mix.id === mixState[step.id],
+                    (mix) => mix.id === mixState[step.id]
                   )?.uses
                 } uses`}
               </div>

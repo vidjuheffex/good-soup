@@ -1,4 +1,4 @@
-import { open, getOneFromStore } from "../db";
+import { open, getOneFromStore, getAllFromStore } from "../db";
 
 export default async ({ params }) => {
   const db = await open();
@@ -7,6 +7,12 @@ export default async ({ params }) => {
       db,
       "chemistry-recipes",
       "by_id",
+      params.chemistryid
+    ),
+    mixes: await getAllFromStore(
+      db,
+      "mixes",
+      "by_chemistry",
       params.chemistryid
     ),
   };

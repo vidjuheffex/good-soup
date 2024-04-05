@@ -6,7 +6,7 @@ import Input from "../components/Input";
 
 export default function CreateMix() {
   const navigate = useNavigate();
-  const { chemistry } = useRouteLoaderData("chemistry");
+  const { chemistry } = useRouteLoaderData("chemistry-route");
 
   // State to store the input amount and calculated amounts
   const [amount, setAmount] = useState("");
