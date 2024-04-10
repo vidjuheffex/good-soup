@@ -38,7 +38,7 @@ export default function CreateDevelopmentRecipe() {
         } else {
           return step;
         }
-      })
+      }),
     );
     setEditingStep(null);
   };
@@ -67,9 +67,8 @@ export default function CreateDevelopmentRecipe() {
   };
 
   return (
-    <Modal handleClose={() => navigate("..")}>
+    <Modal title="Add Recipe" handleClose={() => navigate("..")}>
       <Form ref={formRef} method="post" className="CreateDevelopmentRecipe">
-        <h1>Add Recipe</h1>
         <Input
           name="name"
           label="Name"

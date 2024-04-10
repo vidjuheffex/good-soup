@@ -1,0 +1,19 @@
+.ChemistryLayout {
+  gap: var(--size-3);
+
+  .mixesHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--size-3);
+  }
+
+  .mixesList {
+    list-style: none;
+    text-decoration: underline;
+  }
+
+  .section {
+    width: 100%;
+    max-width: 520px;
+  }
+}

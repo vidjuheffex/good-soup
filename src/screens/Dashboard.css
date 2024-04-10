@@ -6,13 +6,6 @@
   .mix-entry {
     display: flex;
     align-items: center;
-    text-decoration: none;
-
-    &:hover {
-      & .mix-label {
-        text-decoration: underline;
-      }
-    }
   }
 
   .chemistryGroup {
@@ -24,14 +17,16 @@
   .bullet {
     margin-left: 0.5rem;
     margin-right: 0.25rem;
-    font-size: 2rem;
-    line-height: 1.5rem;
+    width: 0.5rem;
+    height: 0.5rem;
   }
   .bullet.okay {
-    color: green;
+    background-color: var(--success);
+    border-radius: 100%;
   }
 
   .bullet.bad {
-    color: red;
+    background-color: var(--danger);
+    border-radius: 100%;
   }
 }

@@ -1,3 +1,60 @@
 .RenameableTitle {
-  display: flex;
+  display: inline-block;
+
+  &.renaming {
+    display: inline-flex;
+  }
+
+  h1 {
+    display: inline;
+  }
+
+  button {
+    font-size: var(--font-size-s);
+  }
+
+  .renameButton {
+    color: var(--brand);
+  }
+  .renameForm {
+    background: var(--background-tertiary);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    input[type="text"] {
+      background: transparent;
+      padding: var(--size-2);
+      border: none;
+      color: var(--font-color);
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    button {
+      background-color: var(--background-tertiary);
+      padding-left: var(--size-3);
+      padding-right: var(--size-3);
+      font-size: var(--font-size-s);
+      height: 100%;
+
+      &[type="submit"] {
+        background-color: var(--brand);
+      }
+
+      &.cancel {
+        background-color: transparent;
+      }
+    }
+  }
+
+  .deleteForm {
+    display: inline-block;
+
+    button {
+      display: inline;
+      color: var(--danger);
+    }
+  }
 }

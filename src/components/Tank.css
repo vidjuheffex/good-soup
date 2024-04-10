@@ -1,9 +1,11 @@
 @keyframes rotate-tank {
   to {
-    transform: rotate(180deg);
+    transform: rotate(180deg) scale(60%);
   }
 }
 .Tank {
+
+    stroke: var(--font-color);
   &.animate-agitation {
     animation: rotate-tank 1s alternate infinite;
     transition: transform 1s;
@@ -12,4 +14,5 @@
   &.paused {
     animation-play-state: paused;
   }
+
 }

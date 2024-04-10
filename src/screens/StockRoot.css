@@ -1,18 +1,19 @@
 .StockRoot {
   display: flex;
-  flex: 1;
+    flex: 1;
+    gap: var(--size-3);
 
-  .renameForm {
-    display: flex;
-  }
 
-  .controls {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-  }
+    .recipesHeading {
+        gap: var(--size-3);
+        display: flex;
+        align-items: center;
+    }
 
-  .delete {
-    color: red;
-  }
+    .recipeLink {
+        text-decoration: underline;
+    }
+    
+    
+    
 }

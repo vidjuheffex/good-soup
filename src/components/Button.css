@@ -1,0 +1,16 @@
+.Button {
+  color: var(--font-color);
+  background-color: var(--background-tertiary);
+  padding: var(--size-2) var(--size-3);
+  border-radius: var(--size-1);
+  box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.15);
+  font-size: var(--font-size-s);
+
+  &[type="submit"] {
+    background-color: var(--brand);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}

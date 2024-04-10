@@ -5,6 +5,7 @@ import { secondsToDuration, calculateAdjustedDuration } from "../utils";
 import { useState, useRef, useEffect } from "react";
 import Content from "../components/Content";
 import RenameableTitle from "../components/RenameableTitle";
+import Button from "../components/Button";
 
 export default function Recipe({ developmentRecipe }) {
   const formRef = useRef();
@@ -297,92 +298,89 @@ export default function Recipe({ developmentRecipe }) {
   const status = isRunning
     ? "running"
     : elapsedTime > 0 && elapsedTime < currentStep.duration * 1000
-    ? "paused"
-    : "not_started";
+      ? "paused"
+      : "not_started";
 
   return (
     <Content>
-      <Link to={`/stock/${params.stockid}`}>Back to Recipes</Link>
-      <div className="controls">
-        <RenameableTitle
-          title={developmentRecipe.name}
-          id={developmentRecipe.id}
-          action="/rename-development-recipe"
-        />
-      </div>
+      <RenameableTitle
+        title={developmentRecipe.name}
+        id={developmentRecipe.id}
+        action="/rename-development-recipe"
+      />
       <fetcher.Form method="post" className="Recipe" ref={formRef}>
-        <div className="center">
+        <div className="tankAndControls">
           <Tank
-            className={`${
-              isAgitating && isRunning ? "animate-agitation" : ""
-            } ${!isRunning ? "paused" : ""}`}
-          />
-        </div>
-        <h3 className="timer">
-          {secondsToDuration(parseInt(elapsedTime / 1000))}
-        </h3>
-        <div className="center">
-          <button type="button" onClick={toggleTimer} disabled={!currentStep}>
-            {status === "running"
-              ? "Pause"
-              : status === "paused"
-              ? "Resume"
-              : "Start"}
-          </button>
-          <button
-            type="button"
-            disabled={
-              currentStepIndex >= developmentRecipe.steps.length - 1 ||
-              !currentStep
-            }
-            onClick={handleSkipStep}
-          >
-            Skip Step
-          </button>
+            className={`tank ${isAgitating ? "animate-agitation" : ""
+              } ${!isRunning ? "paused" : ""}`}
+          /><div>
+            <div className="timerAndControls">
+              <h3 className="timer">
+                {secondsToDuration(parseInt(elapsedTime / 1000))}
+              </h3>
+              <div className="controls">
+                <Button type="submit" onClick={toggleTimer} disabled={!currentStep}>
+                  {status === "running"
+                    ? "Pause"
+                    : status === "paused"
+                      ? "Resume"
+                      : "Start"}
+                </Button>
+                <Button
+                  type="button"
+                  disabled={
+                    currentStepIndex >= developmentRecipe.steps.length - 1 ||
+                    !currentStep
+                  }
+                  onClick={handleSkipStep}
+                >
+                  Skip Step
+                </Button></div>
+            </div>
+          </div>
+
         </div>
 
         <h2>Steps</h2>
         {developmentRecipe.steps.map((step, index) => (
           <div
             key={step.id}
-            className={`step ${currentStepIndex === index ? "active" : ""} ${
-              startedSteps.includes(step.id) && currentStepIndex !== index
+            className={`step ${currentStepIndex === index ? "active" : ""} ${startedSteps.includes(step.id) && currentStepIndex !== index
                 ? "done"
                 : ""
-            }`}
+              }`}
           >
             <h3>
-              {`Step ${index + 1} - ${step.chemistry.name} @ ${
-                step.temp
-              }°F for ${secondsToDuration(step.duration)}`}
+              {`Step ${index + 1} - ${step.chemistry.name} @ ${step.temp
+                }°F for ${secondsToDuration(step.duration)}`}
               {step.chemistry.mixes.length > 0 &&
-                `(+${secondsToDuration(
+                ` (+${secondsToDuration(
                   (isRunning || isPaused) && currentStepIndex === index
                     ? capturedAdjustedDurations[step.id] - step.duration
                     : adjustedDurations[step.id] - step.duration
                 )})`}
             </h3>
             {step.chemistry.mixes.length > 0 && (
-              <div>
-                Using mix:
-                <select
-                  name={currentStepIndex === index ? "mix" : undefined}
-                  value={mixState[step.id]}
-                  disabled={startedSteps.includes(step.id)}
-                  onChange={(ev) => handleChangeMix(ev, step.id)}
-                >
-                  {step.chemistry.mixes.map((mix) => (
-                    <option key={mix.id} value={mix.id}>
-                      {mix.name}
-                    </option>
-                  ))}
-                </select>
+              <div className="mixInfo">
+                <label><span>Using mix:</span>
+                  <select
+                    name={currentStepIndex === index ? "mix" : undefined}
+                    value={mixState[step.id]}
+                    disabled={startedSteps.includes(step.id)}
+                    onChange={(ev) => handleChangeMix(ev, step.id)}
+                  >
+                    {step.chemistry.mixes.map((mix) => (
+                      <option key={mix.id} value={mix.id}>
+                        {mix.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
                 Uses:{" "}
-                {`${
-                  step.chemistry.mixes.find(
-                    (mix) => mix.id === mixState[step.id]
-                  )?.uses
-                } uses`}
+                {`${step.chemistry.mixes.find(
+                  (mix) => mix.id === mixState[step.id]
+                )?.uses
+                  } uses`}
               </div>
             )}
             <progress

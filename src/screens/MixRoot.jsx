@@ -6,11 +6,14 @@ import {
 } from "../utils";
 
 import "./MixRoot.css";
+import RenameableTitle from "../components/RenameableTitle";
 
 export default () => {
   const { mix } = useLoaderData();
 
-  const data = [];
+  const data = [
+    {Chemistry: mix.chemistry.name}
+  ];
 
   if (mix.notes) {
     data.push({ Notes: mix.notes });
@@ -29,9 +32,8 @@ export default () => {
 
   return (
     <Content className="MixRoot">
-      <h1>{mix.chemistry.name}</h1>
-      <h2>{mix.name}</h2>
-      <hr style={{ width: "100%" }} />
+      <RenameableTitle title={mix.name} id={mix.id} renameAction={"/rename-mix"}/ >
+
       {data.map((item, index) => (
         <div key={index}>
           <h3>{Object.keys(item)[0]}</h3>

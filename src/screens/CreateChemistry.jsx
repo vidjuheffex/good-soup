@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import "./CreateChemistry.css";
 import Modal from "../components/Modal";
+import Button from "../components/Button";
 
 export default function CreateChemistry() {
   const navigate = useNavigate();
@@ -14,9 +15,8 @@ export default function CreateChemistry() {
   };
 
   return (
-    <Modal handleClose={() => navigate("..")}>
-      <Form method="post">
-        <h1>Create New Chemistry Recipe</h1>
+    <Modal title="Create New Chemistry Recipe" handleClose={() => navigate("..")}>
+      <Form method="post" className="CreateChemistry">
         <Input
           name="name"
           label="Name"
@@ -33,7 +33,7 @@ export default function CreateChemistry() {
         />
         <Input
           name="temp"
-          type="number"
+          type="temperature"
           label="Temp"
           placeholder="in Farenheit"
           required
@@ -54,7 +54,7 @@ export default function CreateChemistry() {
               required
             />
             <Input
-              name="exhuastionRate"
+              name="exhaustionRate"
               label="Exhaustion Rate"
               type="text"
               pattern="^\d+s|\d+%"
@@ -70,7 +70,7 @@ export default function CreateChemistry() {
           type="textarea"
           placeholder="eg. One-shot but can be used up to 8x with increased 10% dev times."
         />
-        <button type="submit">Submit</button>
+        <Button type="submit">Submit</Button>
       </Form>
     </Modal>
   );

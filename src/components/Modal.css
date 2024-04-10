@@ -7,23 +7,35 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(25px);
+  background-color: rgba(0, 0, 0, 0.1);
 
+  h1 {
+    font-size: var(--font-size-xl);
+  }
+
+  .modalHeading {
+    display: flex;
+
+    h1 {
+      flex: 1;
+    }
+  }
   .ModalWindow {
-    background: white;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    padding: 8px;
+    background-color: var(--background-secondary) !important;
+
+    padding: var(--size-3) var(--size-3);
     position: relative;
     max-height: 90vh;
     overflow-y: auto;
     display: block;
+    box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    min-width: 300px;
   }
 
   .ModalX {
     border: none;
     background: none;
-    position: absolute;
-    top: 4px;
-    right: 4px;
   }
 }

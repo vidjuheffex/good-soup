@@ -2,11 +2,25 @@
 
 .Root {
   header {
-    color: var(--white);
-    background: var(--black);
     font-family: Raleway, sans-serif;
-    padding: var(--size-2);
+    padding: var(--size-1);
+    padding-left: var(--size-3);
+
+    .title {
+    }
+
+    h1 {
+      display: inline-block;
+      font-size: var(--font-size-s);
+      vertical-align: baseline;
+    }
   }
+
+  .version {
+    padding-left: var(--size-2);
+    font-size: var(--font-size-s);
+  }
+
   height: 100%;
   overflow: hidden;
 }

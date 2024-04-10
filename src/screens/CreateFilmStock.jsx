@@ -3,21 +3,21 @@ import { Form, useNavigate } from "react-router-dom";
 
 import "./CreateFilmStock.css";
 import Modal from "../components/Modal";
+import Button from "../components/Button";
 
-export default () => {
+export default function CreateFilmStock() {
   const navigate = useNavigate();
   return (
-    <Modal handleClose={() => navigate("..")}>
-      <Form method="post">
-        <h1>Add Film Stock</h1>
+    <Modal title="Add Film Stock" handleClose={() => navigate("..")}>
+      <Form method="post" className="CreateFilmStock">
         <Input
           name="name"
           label="Name"
           placeholder="eg. Kodak Gold 200"
           required
         />
-        <button type="submit">Submit</button>
+        <Button type="submit">Submit</Button>
       </Form>
     </Modal>
   );
-};
+}

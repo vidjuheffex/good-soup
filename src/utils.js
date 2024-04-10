@@ -69,24 +69,45 @@ export function shelfLifeToSeconds(shelfLife) {
  * @param {number} uses
  * @returns {number} seconds
  */
-export function calculateAdjustedDuration(duration, exhaustionRate, uses) {
+export function calculateAdjustedDuration(durationStr, exhaustionRate, uses) {
+  console.log(durationStr);
+  console.log(exhaustionRate);
+  console.log(uses);
+
+  // Convert duration to number, assuming it ends with "s" for seconds.
+  let duration = parseFloat(durationStr);
+  if (isNaN(duration)) {
+    console.error(
+      "Invalid duration format. Ensure it's a number or ends with 's' for seconds.",
+    );
+    return NaN; // Or return some default error value or throw an error
+  }
+
   let adjustedDuration = duration;
-  if (!exhaustionRate || uses == 0) return adjustedDuration;
+  if (!exhaustionRate || uses === 0) return Math.round(adjustedDuration);
 
   const isPercentage = exhaustionRate.includes("%");
   const rateValue = parseFloat(exhaustionRate);
 
   if (isPercentage) {
-    for (let i = 1; i < uses; i++) {
+    for (let i = 0; i < uses; i++) {
       adjustedDuration += (adjustedDuration * rateValue) / 100;
     }
   } else {
-    adjustedDuration += rateValue * uses;
+    // Here, ensure rateValue is treated as seconds if it doesn't include a percentage sign.
+    let fixedIncrease = rateValue;
+    if (isNaN(fixedIncrease)) {
+      console.error(
+        "Invalid exhaustionRate format. Ensure it's a number or ends with '%'.",
+      );
+      return NaN; // Or handle error appropriately
+    }
+    adjustedDuration += fixedIncrease * uses;
   }
 
+  console.log(Math.round(adjustedDuration));
   return Math.round(adjustedDuration);
 }
-
 /**
  * Takes a shelflife token and expands it into a human readable string
  * @param {string} shelfLife - One of the following formats: "1d", "2w", "3m", "4y"

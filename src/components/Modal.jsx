@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import "./Modal.css";
 
 // Enhanced Modal component with Escape key handling and accessibility considerations
-export default function Modal({ children, handleClose }) {
+export default function Modal({ children, title, handleClose }) {
   // Effect for handling Escape key press
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -31,22 +31,23 @@ export default function Modal({ children, handleClose }) {
       aria-describedby="modalDescription"
     >
       <div className="ModalWindow">
-        <button
-          className="ModalX"
-          type="button"
-          onClick={handleClose}
-          aria-label="Close modal"
-        >
-          X
-        </button>
-        <div id="modalTitle" hidden>
-          Modal Title
+        <div className="modalHeading">
+          <h1 id="modalTitle">{title}</h1>
+          <button
+            className="ModalX"
+            type="button"
+            onClick={handleClose}
+            aria-label="Close modal"
+          >
+            x
+          </button>
         </div>
+
         <div id="modalDescription" className="ModalContent">
           {children}
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

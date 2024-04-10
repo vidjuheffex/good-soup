@@ -6,4 +6,12 @@
   overflow-y: auto;
   align-items: flex-start;
   width: 100%;
+
+  h1 {
+    font-size: var(--font-size-xl);
+  }
+
+  h2 {
+    font-size: var(--font-size-l);
+  }
 }

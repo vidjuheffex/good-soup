@@ -10,16 +10,29 @@ const Input = forwardRef(
         ? "textarea"
         : type == "duration"
         ? DurationInput
-        : "input";
+          : "input";
+
+    let calculatedType=type;
+    
+    if (type=="temperature") {
+      calculatedType = "number"
+    } else if (type=="textarea") {
+      calculatedType=undefined
+    }
+
+    
+
+    const isCheckbox = type=="checkbox"
 
     return (
-      <label className="Input">
+      <label className={`Input ${isCheckbox ? "checkbox" : ""}`}>
         <div>{label}</div>
         <Component
+          className={type == "temperature" ? "temperature" : "input"}
           autoComplete={autoComplete || "off"}
           ref={ref}
           placeholder={placeholder}
-          type={type}
+          type={calculatedType}fire
           {...props}
         />
       </label>

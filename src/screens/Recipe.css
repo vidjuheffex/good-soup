@@ -11,14 +11,22 @@
   flex: 4;
   width: 100%;
 
+  .timerAndControls {
+    display: flex;
+    flex-direction: column;
+  }
   .controls {
     display: flex;
-    align-items: center;
   }
 
-  progress {
-    width: 100%;
-    height: 50px;
+  .tank {
+    transform: scale(60%);
+  }
+
+  .tankAndControls {
+    display: flex;
+    align-items: center;
+    gap: var(--size-3);
   }
 
   .step:not(.active) {
@@ -34,9 +42,9 @@
     margin-right: auto;
   }
 
-  .timer {
+  .playbackControls {
     display: flex;
-    justify-content: center;
+    gap: var(--size-3);
   }
 
   svg {
@@ -49,5 +57,11 @@
 
   .paused {
     animation-play-state: paused;
+  }
+
+  .mixInfo {
+    display: flex;
+    gap: var(--size-3);
+    align-items: center;
   }
 }

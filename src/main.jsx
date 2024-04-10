@@ -2,13 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Route,
-  Link,
-  Outlet,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 // screens
 import Dashboard from "./screens/Dashboard";
@@ -21,7 +15,6 @@ import StockRoot from "./screens/StockRoot";
 import RecipeRoot from "./screens/RecipeRoot";
 import MixRoot from "./screens/MixRoot";
 import ChemistryLayout from "./screens/ChemistryLayout";
-import ChemistryIndex from "./screens/ChemistryIndex";
 
 // loader
 import getDashboardData from "./loaders/get-dashboard-data";
@@ -40,6 +33,10 @@ import deleteMix from "./actions/delete-mix";
 import deleteFilmStock from "./actions/delete-film-stock";
 import renameFilmStock from "./actions/rename-film-stock";
 import renameDevelopmentRecipe from "./actions/rename-development-recipe";
+import renameChemistryRecipe from "./actions/rename-chemistry-recipe";
+import deleteChemistryRecipe from "./actions/delete-chemistry-recipe";
+import renameMix from "./actions/rename-mix";
+import updateChemistryRecipe from "./actions/update-chemistry-recipe";
 
 const router = createBrowserRouter(
   [
@@ -110,6 +107,10 @@ const router = createBrowserRouter(
               action: deleteFilmStock,
             },
             {
+              path: "delete-chemistry-recipe",
+              action: deleteChemistryRecipe,
+            },
+            {
               path: "rename-film-stock",
               action: renameFilmStock,
             },
@@ -117,16 +118,28 @@ const router = createBrowserRouter(
               path: "rename-development-recipe",
               action: renameDevelopmentRecipe,
             },
+            {
+              path: "rename-chemistry-recipe",
+              action: renameChemistryRecipe,
+            },
+            {
+              path: "update-chemistry-recipe",
+              action: updateChemistryRecipe,
+            },
+            {
+              path: "rename-mix",
+              action: renameMix,
+            },
           ],
         },
       ],
     },
   ],
-  { basename: "/good-soup/" }
+  { basename: "/good-soup/" },
 );
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <RouterProvider router={router} />
-  </React.StrictMode>
+  </React.StrictMode>,
 );

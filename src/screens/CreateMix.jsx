@@ -3,6 +3,7 @@ import { Form, useRouteLoaderData, useNavigate } from "react-router-dom";
 import "./CreateMix.css";
 import Modal from "../components/Modal";
 import Input from "../components/Input";
+import Button from "../components/Button";
 
 export default function CreateMix() {
   const navigate = useNavigate();
@@ -39,9 +40,8 @@ export default function CreateMix() {
   };
 
   return (
-    <Modal handleClose={() => navigate("..")}>
-      <Form method="post">
-        <h1>Create Mix</h1>
+    <Modal title="Create Mix" handleClose={() => navigate("..")}>
+      <Form method="post" className="CreateMix">
         <Input
           type="number"
           name="amount"
@@ -52,15 +52,14 @@ export default function CreateMix() {
           onChange={handleInputChange}
         />
         <input type="hidden" value={chemistry.id} name="chemistryId" readOnly />
-        {amount && (
-          <div>
-            <p>Chemicals Needed: {chemAmount.toFixed(2)} ml</p>
-            <p>Water Needed: {waterAmount.toFixed(2)} ml</p>
-          </div>
-        )}
-        <div>{`Mix at ${chemistry.temp} Farenheit`}</div>
-        <hr />
-        <button type="submit">Mix</button>
+
+        <div>
+          <p>Chemicals Needed: {chemAmount.toFixed(2)} ml</p>
+          <p>Water Needed: {waterAmount.toFixed(2)} ml</p>
+        </div>
+
+        <div>{`Mix at ${chemistry.temp}°`}</div>
+        <Button type="submit">Mix</Button>
       </Form>
     </Modal>
   );

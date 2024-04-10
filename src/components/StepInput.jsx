@@ -23,9 +23,8 @@ export default ({
       agitationTimeInputRef.current,
       agitationIntervalsInputRef.current,
       tempInputRef.current,
-    ].forEach((ref, index) => {
+    ].forEach((ref) => {
       if (ref && !ref.checkValidity()) {
-        console.log(`Input ${index} is not valid: ${ref.validationMessage}`);
         isValid = false; // Mark as invalid if any input fails validation
       }
     });

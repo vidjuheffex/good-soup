@@ -1,19 +1,39 @@
 .Input {
-    flex-direction: column;
-    position: relative;
+  flex-direction: column;
+  position: relative;
+  display: flex;
 
-    input, textarea {
-        margin: 0;
-        box-sizing: border-box;
-        padding: 10px;
-        width: 100%;
-        border: none;
-        border-bottom: 1px solid rgba(0,0,0,.25);
+  &.checkbox {
+    flex-direction: row;
+    white-space: nowrap;
+    flex-direction: row-reverse;
+    gap: var(--size-2);
+    div {
+      flex: 1;
     }
 
-    &:hover {
-        input {
-        border-bottom-color: black;
-        }
+    input {
+      width: auto;
     }
+  }
+
+  input,
+  textarea {
+    color: inherit;
+    margin: 0;
+    box-sizing: border-box;
+    width: 100%;
+    border: none;
+    background: var(--background-tertiary);
+    padding: var(--size-2) var(--size-3);
+    border-radius: 4px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  input.temperature::after {
+    content: "s";
+  }
 }

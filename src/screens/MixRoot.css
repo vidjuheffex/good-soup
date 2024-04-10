@@ -1,5 +1,6 @@
 .MixRoot {
   .dispose {
-    color: red;
+    color: var(--danger);
   }
+  gap: var(--size-3);
 }

@@ -14,7 +14,7 @@ const Icon = ({ className, ...props }, ref) => {
       {...props}
     >
       <defs>
-        <style>{`.cls-1 { fill: none; stroke: #231f20; stroke-miterlimit: 10; stroke-width: 13px; }`}</style>
+        <style>{`.cls-1 { fill: none; stroke-miterlimit: 10; stroke-width: 13px; }`}</style>
       </defs>
       <path
         id="SFZJ7p"

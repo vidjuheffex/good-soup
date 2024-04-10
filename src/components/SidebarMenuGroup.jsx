@@ -1,14 +1,16 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import "./SidebarMenuGroup.css";
+import Button from "./Button";
 
 export default ({ title, items, createNewLink, children }) => {
+  const navigate = useNavigate()
   return (
     <div className="SidebarMenuGroup">
       <h2 className="title">{title}</h2>
       {children}
-      <Link className="createLink" to={createNewLink}>
-        [+ Create New]
-      </Link>
+      <Button type="submit" onClick={()=>navigate(createNewLink)}>
+        Create New
+      </Button>
     </div>
   );
 };

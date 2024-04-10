@@ -38,17 +38,12 @@ export default () => {
         <SidebarMenuGroup title="Chemistry" createNewLink="create-chemistry">
           {data.chemistryRecipes.map((recipe) => (
             <div className="chemistryGroup" key={recipe.id}>
-              <div>
-                <Link
-                  key={`${recipe.id}-create`}
-                  to={`/chemistry/${recipe.id}/create-mix`}
-                >
-                  {`[+] `}
-                </Link>
+
+
                 <NavLink key={recipe.id} to={`/chemistry/${recipe.id}`}>
                   {`${recipe.name}`}
                 </NavLink>
-              </div>
+
               {recipe.mixes.map((mix) => {
                 const expired =
                   recipe.shelfLife && createdDateAndShelfLifeToExpirationDate
@@ -66,7 +61,7 @@ export default () => {
                         expired || exhausted ? "bad" : "okay"
                       }`}
                     >
-                      •
+                      
                     </span>
                     <span className="mix-label">{`${mix.name}`}</span>
                   </NavLink>
