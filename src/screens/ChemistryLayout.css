@@ -12,6 +12,16 @@
     text-decoration: underline;
   }
 
+  .mixingHeader {
+    h2 {
+      display: inline-block;
+    }
+
+    button {
+      color: var(--brand);
+    }
+  }
+
   .section {
     width: 100%;
     max-width: 520px;

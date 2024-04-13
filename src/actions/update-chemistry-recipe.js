@@ -1,3 +1,4 @@
+import { redirect } from "react-router-dom";
 import { getOneFromStore, open, putObjectInStore } from "../db";
 
 export default async ({ request }) => {
@@ -13,9 +14,24 @@ export default async ({ request }) => {
     formObject.id,
   );
 
-  recipe.notes = formObject.notes;
+  if (formObject.notes) {
+    await putObjectInStore(db, "chemistry-recipes", {
+      ...recipe,
+      notes: formObject.notes,
+    });
+    return formObject.notes;
+  } else {
+    if (formObject.oneShot) {
+      formObject.maxUses = "";
+      formObject.shelfLife = "";
+      formObject.exhaustionRate = "";
+    }
 
-  await putObjectInStore(db, "chemistry-recipes", recipe);
-
-  return recipe.name;
+    await putObjectInStore(db, "chemistry-recipes", {
+      ...recipe,
+      ...formObject,
+      oneShot: !!formObject.oneShot,
+    });
+    return redirect("..");
+  }
 };

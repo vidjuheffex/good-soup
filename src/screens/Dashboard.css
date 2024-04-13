@@ -29,4 +29,10 @@
     background-color: var(--danger);
     border-radius: 100%;
   }
+
+  .settingsLink {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+  }
 }

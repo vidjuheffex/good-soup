@@ -1,5 +1,12 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useState, useEffect } from "react";
 import "./DurationInput.css";
+
+const parseDefaultValue = (defaultValue) => {
+  if (!defaultValue) return { numeric: undefined, unit: "d" }; // Default unit is "d" (days)
+  const numeric = defaultValue.replace(/\D/g, '');
+  const unit = defaultValue.replace(/\d/g, '');
+  return { numeric, unit };
+};
 
 const createCompoundValue = (numeric, unit) => {
   if (!(numeric && unit)) return undefined;
@@ -7,21 +14,24 @@ const createCompoundValue = (numeric, unit) => {
 };
 
 const DurationInput = forwardRef(
-  ({ disabled, name, required, ...props }, ref) => {
-    const [numericValue, setNumericValue] = useState(undefined);
-    const [unitValue, setUnitValue] = useState("d");
-    const [value, setValue] = useState("");
+  ({ disabled, name, required, defaultValue, ...props }, ref) => {
+    const parsedDefault = parseDefaultValue(defaultValue);
+    const [numericValue, setNumericValue] = useState(parsedDefault.numeric);
+    const [unitValue, setUnitValue] = useState(parsedDefault.unit);
+    const [value, setValue] = useState(defaultValue);
+
+    useEffect(() => {
+      setValue(createCompoundValue(numericValue, unitValue));
+    }, [numericValue, unitValue]);
 
     const handleNumericChange = (e) => {
-      let val = e.target.value;
+      const val = e.target.value;
       setNumericValue(val);
-      setValue(createCompoundValue(val, unitValue));
     };
 
     const handleUnitChange = (e) => {
-      let val = e.target.value;
+      const val = e.target.value;
       setUnitValue(val);
-      setValue(createCompoundValue(numericValue, val));
     };
 
     return (
@@ -46,6 +56,7 @@ const DurationInput = forwardRef(
           type="number"
           min={0}
           disabled={disabled}
+          value={numericValue || ""}
           onChange={handleNumericChange}
         />
         <select

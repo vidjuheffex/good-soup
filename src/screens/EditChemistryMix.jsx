@@ -1,37 +1,35 @@
 import Input from "../components/Input";
-import { Form, useNavigate } from "react-router-dom";
+import { Form, useNavigate, useRouteLoaderData } from "react-router-dom";
 import { useState } from "react";
 
-import "./CreateChemistry.css";
+import "./EditChemistryMix.css";
 import Modal from "../components/Modal";
 import Button from "../components/Button";
 
 export default function CreateChemistry() {
   const navigate = useNavigate();
-  const [showReuseOptions, setShowReuseOptions] = useState(false);
+  const data = useRouteLoaderData("chemistry-route");
+
+  console.log(data);
+  const [showReuseOptions, setShowReuseOptions] = useState(
+    !data.chemistry.oneShot,
+  );
 
   const handleOneShotChange = (event) => {
     setShowReuseOptions(!event.target.checked);
   };
 
   return (
-    <Modal
-      title="Create New Chemistry Recipe"
-      handleClose={() => navigate("..")}
-    >
-      <Form method="post" className="CreateChemistry">
-        <Input
-          name="name"
-          label="Name"
-          placeholder="eg. Rodinal 1:50"
-          required
-        />
+    <Modal title="Edit Mix" handleClose={() => navigate("..")}>
+      <Form method="post" className="EditChemistryMix">
+        <input type="hidden" value={data.chemistry.id} name="id" />
         <Input
           name="ratio"
           label="Chem Ratio"
           placeholder="eg. 1:50"
           pattern="^\d+:\d+$"
           title="Must be in the format of 'a:b'"
+          defaultValue={data.chemistry.ratio}
           required
         />
         <Input
@@ -41,34 +39,39 @@ export default function CreateChemistry() {
           placeholder="in Farenheit"
           required
           maxLength={4}
+          defaultValue={data.chemistry.temp}
         />
         <Input
           name="oneShot"
           label="One-shot"
           type="checkbox"
-          defaultChecked={true}
+          defaultChecked={data.chemistry.oneShot}
           onChange={handleOneShotChange}
         />
         {showReuseOptions && (
           <>
-            <Input name="shelfLife" label="Shelf Life" type="duration" />
+            <Input
+              name="shelfLife"
+              label="Shelf Life"
+              type="duration"
+              defaultValue={data.chemistry?.shelfLife}
+            />
             <Input
               name="exhaustionRate"
               label="Exhaustion Rate"
               type="text"
+              defaultValue={data.chemistry?.exhaustionRate}
               pattern="^\d+s|\d+%"
               title="Must be in the format of 'ns' or 'n%'"
             />
-            <Input name="maxUses" label="Max Uses" type="number" />
+            <Input
+              name="maxUses"
+              label="Max Uses"
+              type="number"
+              defaultValue={data.chemistry?.maxUses}
+            />
           </>
         )}
-
-        <Input
-          name="notes"
-          label="Notes"
-          type="textarea"
-          placeholder="eg. One-shot but can be used up to 8x with increased 10% dev times."
-        />
         <Button type="submit">Submit</Button>
       </Form>
     </Modal>

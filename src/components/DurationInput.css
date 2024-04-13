@@ -1,4 +1,9 @@
 .DurationInput {
   display: flex;
-  position: relative;
+    position: relative;
+    flex: 1;
+
+    select {
+        font-size: var(--font-size-s);
+    }
 }

@@ -1,0 +1,7 @@
+.Settings {
+  padding: var(--size-3);
+
+  h1 {
+    font-size: var(--font-size-l);
+  }
+}

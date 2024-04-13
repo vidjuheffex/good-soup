@@ -24,26 +24,6 @@ export default function ChemistryLayout() {
         renameAction={"/rename-chemistry-recipe"}
         deleteAction={"/delete-chemistry-recipe"}
       />
-      <div className="section">
-        <Notes
-          notes={chemistry.notes}
-          id={chemistry.id}
-          updateUrl="/update-chemistry-recipe"
-        />
-      </div>
-      <div>
-        <h2>Mixing Details</h2>
-        {chemistry.oneShot || (
-          <>
-            <div>Exhaustion Rate: {chemistry.exhaustionRate}</div>
-            <div>Shelf Life: {chemistry.shelfLife}</div>
-          </>
-        )}
-
-        <div>Temperature: {chemistry.temp}°</div>
-        <div>Ratio: {chemistry.ratio}</div>
-        <div>One Shot: {chemistry.oneShot ? "Yes" : "No"}</div>
-      </div>
       <div>
         <div className="mixesHeader">
           <h2>Mixes</h2>
@@ -63,6 +43,36 @@ export default function ChemistryLayout() {
           <div>No mixes available</div>
         )}
       </div>
+      <div className="section">
+        <Notes
+          notes={chemistry.notes}
+          id={chemistry.id}
+          updateUrl="/update-chemistry-recipe"
+        />
+      </div>
+      <div>
+        <div className="mixingHeader">
+          <h2>Mixing Details</h2>{" "}
+          <button onClick={() => navigate("edit-chemistry-mix")}>Edit</button>
+        </div>
+        {!chemistry.oneShot ? (
+          <>
+            {chemistry.maxUses && <div>Max Uses: {chemistry.maxUses}</div>}
+            {chemistry.exhaustionRate && (
+              <div>Exhaustion Rate: {chemistry.exhaustionRate}</div>
+            )}
+            {chemistry.shelfLife && (
+              <div>Shelf Life: {chemistry.shelfLife}</div>
+            )}
+          </>
+        ) : (
+          <div>One Shot: {chemistry.oneShot ? "Yes" : "No"}</div>
+        )}
+
+        <div>Temperature: {chemistry.temp}°</div>
+        <div>Ratio: {chemistry.ratio}</div>
+      </div>
+
       <Outlet />
     </Content>
   );

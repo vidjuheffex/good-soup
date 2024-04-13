@@ -48,6 +48,7 @@ export function open() {
           shelfLife: "2m",
           exhaustionRate: "15s",
           oneShot: false,
+          maxUses: 16,
         });
 
         filmStockStore.put({ id: sampleStockId, name: "Kentmere 400" });

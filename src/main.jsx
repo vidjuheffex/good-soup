@@ -15,6 +15,8 @@ import StockRoot from "./screens/StockRoot";
 import RecipeRoot from "./screens/RecipeRoot";
 import MixRoot from "./screens/MixRoot";
 import ChemistryLayout from "./screens/ChemistryLayout";
+import EditChemistryMix from "./screens/EditChemistryMix";
+import Settings from "./screens/Settings";
 
 // loader
 import getDashboardData from "./loaders/get-dashboard-data";
@@ -81,6 +83,11 @@ const router = createBrowserRouter(
                   action: createMix,
                   element: <CreateMix />,
                 },
+                {
+                  path: "edit-chemistry-mix",
+                  action: updateChemistryRecipe,
+                  element: <EditChemistryMix />,
+                },
               ],
             },
             {
@@ -98,43 +105,54 @@ const router = createBrowserRouter(
               element: <CreateFilmStock />,
               action: createFilmStock,
             },
-            {
-              path: "delete-mix",
-              action: deleteMix,
-            },
-            {
-              path: "delete-film-stock",
-              action: deleteFilmStock,
-            },
-            {
-              path: "delete-chemistry-recipe",
-              action: deleteChemistryRecipe,
-            },
-            {
-              path: "rename-film-stock",
-              action: renameFilmStock,
-            },
-            {
-              path: "rename-development-recipe",
-              action: renameDevelopmentRecipe,
-            },
-            {
-              path: "rename-chemistry-recipe",
-              action: renameChemistryRecipe,
-            },
-            {
-              path: "update-chemistry-recipe",
-              action: updateChemistryRecipe,
-            },
-            {
-              path: "rename-mix",
-              action: renameMix,
-            },
           ],
+        },
+
+        {
+          path: "settings",
+          element: <Settings />,
+        },
+
+        // action (api) routes
+        // Todo:
+        // - cleanup, eg: 'delete-mix' can re-use 'mix' but look for "method is DELETE"
+        // - consolidate, eg: rename is update
+        {
+          path: "delete-mix",
+          action: deleteMix,
+        },
+        {
+          path: "delete-film-stock",
+          action: deleteFilmStock,
+        },
+        {
+          path: "delete-chemistry-recipe",
+          action: deleteChemistryRecipe,
+        },
+        {
+          path: "rename-film-stock",
+          action: renameFilmStock,
+        },
+        {
+          path: "rename-development-recipe",
+          action: renameDevelopmentRecipe,
+        },
+        {
+          path: "rename-chemistry-recipe",
+          action: renameChemistryRecipe,
+        },
+        {
+          path: "update-chemistry-recipe",
+          action: updateChemistryRecipe,
+        },
+        {
+          path: "rename-mix",
+          action: renameMix,
         },
       ],
     },
   ],
+
   { basename: "/good-soup/" },
 );
 

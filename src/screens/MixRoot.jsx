@@ -22,12 +22,13 @@ export default () => {
   data.push({ Uses: mix.uses });
 
   if (!mix.chemistry.oneShot) {
+    if (mix.chemistry.shelfLife) {
     const expirationDateString = createdDateAndShelfLifeToExpirationDate(
       mix.createdAt,
       mix.chemistry.shelfLife
     ).toLocaleDateString("en-US");
     data.push({ "Expiration Date": expirationDateString });
-    data.push({ "Shelf Life": shelfLifeToString(mix.chemistry.shelfLife) });
+    }
   }
 
   return (

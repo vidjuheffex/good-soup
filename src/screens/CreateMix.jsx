@@ -43,9 +43,9 @@ export default function CreateMix() {
     <Modal title="Create Mix" handleClose={() => navigate("..")}>
       <Form method="post" className="CreateMix">
         <Input
-          type="number"
+          type="milliliters"
           name="amount"
-          label="amount"
+          label="Amount"
           placeholder="amount in ml"
           required
           value={amount}

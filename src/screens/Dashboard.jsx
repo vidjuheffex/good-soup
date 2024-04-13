@@ -2,16 +2,15 @@ import "./Dashboard.css";
 import SidebarMenu from "../components/SidebarMenu.jsx";
 import SidebarMenuGroup from "../components/SidebarMenuGroup.jsx";
 
-import { Fragment, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import {
   Outlet,
   useFetcher,
   useLoaderData,
   useParams,
-  useRouteLoaderData,
   NavLink,
-  Link,
+  Link
 } from "react-router-dom";
 import { createdDateAndShelfLifeToExpirationDate } from "../utils.js";
 
@@ -77,6 +76,7 @@ export default () => {
             </NavLink>
           ))}
         </SidebarMenuGroup>
+      <Link to="/settings" className="settingsLink"><span>Settings</span><span>⚙</span></Link >
       </SidebarMenu>
       <Outlet />
     </div>

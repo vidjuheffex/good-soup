@@ -2,19 +2,43 @@
   flex-direction: column;
   position: relative;
   display: flex;
+  font-size: var(--font-size-s);
 
   &.checkbox {
     flex-direction: row;
     white-space: nowrap;
     flex-direction: row-reverse;
     gap: var(--size-2);
-    div {
+
+    .label {
       flex: 1;
     }
 
     input {
       width: auto;
     }
+  }
+
+  .input-wrapper {
+    position: relative;
+    line-height: 1.5;
+    display: flex;
+  }
+
+  .see-through {
+    color: transparent;
+  }
+
+  .suffix {
+    position: absolute;
+    font-size: var(--font-size-m);
+    padding: var(--size-2) var(--size-3);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    user-select: none;
+    pointer-events: none;
   }
 
   input,
@@ -27,13 +51,11 @@
     background: var(--background-tertiary);
     padding: var(--size-2) var(--size-3);
     border-radius: 4px;
+    font-size: var(--font-size-m);
+    line-height: 1.5;
 
     &:focus {
       outline: none;
     }
-  }
-
-  input.temperature::after {
-    content: "s";
   }
 }
