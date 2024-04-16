@@ -1,7 +1,7 @@
 export function open() {
   return new Promise(function (resolve, reject) {
     let db;
-    const request = indexedDB.open("database", 2);
+    const request = indexedDB.open("database", 3);
 
     request.onupgradeneeded = function (event) {
       // The database did not previously exist, so create object stores and indexes.
@@ -18,7 +18,7 @@ export function open() {
           "development-recipes",
           {
             keyPath: "id",
-          }
+          },
         );
         developmentRecipeStore.createIndex("by_filmstock", "filmstock_id");
         developmentRecipeStore.createIndex("by_id", "id");
@@ -74,6 +74,18 @@ export function open() {
         const filmstockStore = request.transaction.objectStore("film-stocks");
         filmstockStore.createIndex("by_id", "id");
       }
+      if (event.oldVersion < 3) {
+        console.log("Upgrading db to version 3");
+
+        // Seed database with core data
+        // for now this is water.
+        const chemistryRecipeStore =
+          request.transaction.objectStore("chemistry-recipes");
+        chemistryRecipeStore.put({
+          id: "_WATER_",
+          name: "Water",
+        });
+      }
     };
 
     request.onsuccess = function () {
@@ -90,7 +102,6 @@ export function open() {
 export function getOneFromStore(db, storeName, indexName, indexValue) {
   return new Promise((resolve, reject) => {
     const formattedIndexValue = String(indexValue);
-    console.log(`Fetching from store ${storeName} by ${indexName} with value ${formattedIndexValue}`);
 
     const tx = db.transaction(storeName, "readonly");
     const store = tx.objectStore(storeName);
@@ -101,7 +112,11 @@ export function getOneFromStore(db, storeName, indexName, indexValue) {
       if (request.result) {
         resolve(request.result);
       } else {
-        reject(new Error(`No item found with index ${formattedIndexValue} in ${indexName}`));
+        reject(
+          new Error(
+            `No item found with index ${formattedIndexValue} in ${indexName}`,
+          ),
+        );
       }
     };
 
@@ -111,12 +126,11 @@ export function getOneFromStore(db, storeName, indexName, indexValue) {
   });
 }
 
-
 export function getAllFromStore(
   db,
   storeName,
   indexName = null,
-  indexValue = null
+  indexValue = null,
 ) {
   return new Promise((resolve, reject) => {
     const tx = db.transaction(storeName, "readonly");
@@ -187,7 +201,7 @@ export function deleteObjectAndDependentsFromStore(
   db,
   storeName,
   key,
-  dependentStores
+  dependentStores,
   // dependent stores should be an object that
   // has a key of the store name and a value of the index name
   // eg { "development-recipes": "filmstock_id"}
@@ -195,7 +209,7 @@ export function deleteObjectAndDependentsFromStore(
   return new Promise(async (resolve, reject) => {
     const tx = db.transaction(
       [storeName, ...Object.keys(dependentStores)],
-      "readwrite"
+      "readwrite",
     );
 
     // Handle errors for the transaction
@@ -204,7 +218,7 @@ export function deleteObjectAndDependentsFromStore(
 
     // Process each dependent store
     for (const [dependentStoreName, indexName] of Object.entries(
-      dependentStores
+      dependentStores,
     )) {
       const store = tx.objectStore(dependentStoreName);
       const index = store.index(indexName);

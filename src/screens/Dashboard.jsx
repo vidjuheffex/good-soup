@@ -36,7 +36,11 @@ export default () => {
     <div className="Dashboard">
       <SidebarMenu>
         <SidebarMenuGroup title="Chemistry" createNewLink="create-chemistry">
-          {data.chemistryRecipes.map((recipe) => (
+          {data.chemistryRecipes.map((recipe) => {
+            if (recipe.id == "_WATER_") {
+              return null;
+            }
+            return (
             <div className="chemistryGroup" key={recipe.id}>
 
 
@@ -68,7 +72,7 @@ export default () => {
                 );
               })}
             </div>
-          ))}
+            )})}
         </SidebarMenuGroup>
         <SidebarMenuGroup title="Development" createNewLink="create-film-stock">
           {data.filmStocks.map((item) => (

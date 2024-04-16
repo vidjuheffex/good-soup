@@ -97,7 +97,6 @@ export default ({
             pattern={DURATION_INPUT_PATTERN}
             ref={initialAgitationInputRef}
             defaultValue={defaultValues?.initialAgitation || ""}
-            required
           />
           <Input
             name="step-agitation-time"
@@ -105,7 +104,6 @@ export default ({
             type="text"
             pattern={DURATION_INPUT_PATTERN}
             placeholder="hh:mm:ss"
-            required
             ref={agitationTimeInputRef}
             defaultValue={defaultValues?.agitationTime || ""}
           />
@@ -115,7 +113,6 @@ export default ({
             type="text"
             placeholder="hh:mm:ss"
             pattern={DURATION_INPUT_PATTERN}
-            required
             ref={agitationIntervalsInputRef}
             defaultValue={defaultValues?.agitationIntervals || ""}
           />
