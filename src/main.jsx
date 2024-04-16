@@ -17,6 +17,7 @@ import MixRoot from "./screens/MixRoot";
 import ChemistryLayout from "./screens/ChemistryLayout";
 import EditChemistryMix from "./screens/EditChemistryMix";
 import Settings from "./screens/Settings";
+import EditSteps from "./screens/EditSteps";
 
 // loader
 import getDashboardData from "./loaders/get-dashboard-data";
@@ -35,6 +36,7 @@ import deleteMix from "./actions/delete-mix";
 import deleteFilmStock from "./actions/delete-film-stock";
 import renameFilmStock from "./actions/rename-film-stock";
 import renameDevelopmentRecipe from "./actions/rename-development-recipe";
+import deleteDevelopmentRecipe from "./actions/delete-development-recipe";
 import renameChemistryRecipe from "./actions/rename-chemistry-recipe";
 import deleteChemistryRecipe from "./actions/delete-chemistry-recipe";
 import renameMix from "./actions/rename-mix";
@@ -70,6 +72,13 @@ const router = createBrowserRouter(
               loader: getStockRecipe,
               action: handleRecipeActions,
               element: <RecipeRoot />,
+              id: 'development-recipe-route',
+              children: [
+                {
+                  path: "edit-steps",
+                  element: <EditSteps />
+                }
+              ]
             },
 
             {
@@ -116,7 +125,7 @@ const router = createBrowserRouter(
         // action (api) routes
         // Todo:
         // - cleanup, eg: 'delete-mix' can re-use 'mix' but look for "method is DELETE"
-        // - consolidate, eg: rename is update
+        // - consolidate, eg: rename is update with a value on submit to differentiate 
         {
           path: "delete-mix",
           action: deleteMix,
@@ -128,6 +137,10 @@ const router = createBrowserRouter(
         {
           path: "delete-chemistry-recipe",
           action: deleteChemistryRecipe,
+        },
+        {
+          path: "delete-development-recipe",
+          action: deleteDevelopmentRecipe,
         },
         {
           path: "rename-film-stock",

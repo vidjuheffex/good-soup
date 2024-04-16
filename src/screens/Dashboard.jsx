@@ -31,6 +31,7 @@ export default () => {
     prevStockId.current = params.stockid;
   }, [params.stockid]);
 
+
   return (
     <div className="Dashboard">
       <SidebarMenu>
@@ -45,10 +46,10 @@ export default () => {
 
               {recipe.mixes.map((mix) => {
                 const expired =
-                  recipe.shelfLife && createdDateAndShelfLifeToExpirationDate
+                  recipe?.shelfLife && createdDateAndShelfLifeToExpirationDate
                     ? new Date(mix.expires) < new Date()
                     : false;
-                const exhausted = mix.uses > 0 && recipe.oneShot == true;
+                const exhausted = (mix?.uses > 0 && recipe.oneShot == true) || (mix?.uses >= recipe.maxUses);
                 return (
                   <NavLink
                     key={mix.id}

@@ -18,16 +18,17 @@
     margin-left: 0.5rem;
     margin-right: 0.25rem;
     width: 0.5rem;
-    height: 0.5rem;
+      height: 0.5rem;
+          border-radius: 100%;
   }
   .bullet.okay {
     background-color: var(--success);
-    border-radius: 100%;
+
   }
 
   .bullet.bad {
     background-color: var(--danger);
-    border-radius: 100%;
+
   }
 
   .settingsLink {

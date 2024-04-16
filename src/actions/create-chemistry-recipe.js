@@ -9,9 +9,6 @@ export default async ({ request, params }) => {
       const formData = await request.formData();
       const formObject = Object.fromEntries(formData.entries());
 
-
-      console.log(formObject)
-
       formObject.oneShot = formObject?.oneShot === "on";
       formObject.temp = parseInt(formObject.temp, 10);
 

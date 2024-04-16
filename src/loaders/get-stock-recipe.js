@@ -8,15 +8,15 @@ export default async ({ params }) => {
     db,
     "development-recipes",
     "by_id",
-    params.recipeid
+    params.recipeid,
   );
 
   // Get the chemistry recipes that the steps use
-  const chemistryIds = developmentRecipe.steps.map((step) => step.chemistry);
+  const chemistryIds = developmentRecipe.steps.map((step) => step.chemistry_id);
   let chemistryRecipes = await Promise.all(
     chemistryIds.map((id) =>
-      getOneFromStore(db, "chemistry-recipes", "by_id", id)
-    )
+      getOneFromStore(db, "chemistry-recipes", "by_id", id),
+    ),
   );
 
   // Append any available mixes to the chemistry recipes
@@ -24,13 +24,15 @@ export default async ({ params }) => {
     chemistryRecipes.map(async (recipe) => ({
       ...recipe,
       mixes: await getAllFromStore(db, "mixes", "by_chemistry", recipe.id),
-    }))
+    })),
   );
 
-  // Replace the chemistry id with the full chemistry recipe
+  // append the receipe with full chemistry recipe
   developmentRecipe.steps = developmentRecipe.steps.map((step) => ({
     ...step,
-    chemistry: chemistryRecipes.find((recipe) => recipe.id === step.chemistry),
+    _chemistry: chemistryRecipes.find(
+      (recipe) => recipe.id === step.chemistry_id,
+    ),
   }));
 
   return {

@@ -70,10 +70,6 @@ export function shelfLifeToSeconds(shelfLife) {
  * @returns {number} seconds
  */
 export function calculateAdjustedDuration(durationStr, exhaustionRate, uses) {
-  console.log(durationStr);
-  console.log(exhaustionRate);
-  console.log(uses);
-
   // Convert duration to number, assuming it ends with "s" for seconds.
   let duration = parseFloat(durationStr);
   if (isNaN(duration)) {
@@ -105,7 +101,6 @@ export function calculateAdjustedDuration(durationStr, exhaustionRate, uses) {
     adjustedDuration += fixedIncrease * uses;
   }
 
-  console.log(Math.round(adjustedDuration));
   return Math.round(adjustedDuration);
 }
 /**

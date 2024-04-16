@@ -20,7 +20,7 @@ export function open() {
             keyPath: "id",
           }
         );
-        developmentRecipeStore.createIndex("by_filmstock", "filmStockId");
+        developmentRecipeStore.createIndex("by_filmstock", "filmstock_id");
         developmentRecipeStore.createIndex("by_id", "id");
 
         const filmStockStore = db.createObjectStore("film-stocks", {
@@ -32,7 +32,7 @@ export function open() {
         });
 
         mixStore.createIndex("by_id", "id");
-        mixStore.createIndex("by_chemistry", "chemistryId");
+        mixStore.createIndex("by_chemistry", "chemistry_id");
 
         // Seed database with sample data
 
@@ -55,14 +55,14 @@ export function open() {
         developmentRecipeStore.put({
           id: crypto.randomUUID(),
           name: "Monobath Df96 - Intermittent Agitation",
-          filmStockId: sampleStockId,
+          filmstock_id: sampleStockId,
           steps: [
             {
               id: crypto.randomUUID(),
               initialAgitation: 30,
               agitationTime: 4,
               agitationIntervals: 60,
-              chemistry: sampleChemId,
+              chemistry_id: sampleChemId,
               temp: 75,
               duration: 240,
             },
@@ -89,16 +89,28 @@ export function open() {
 
 export function getOneFromStore(db, storeName, indexName, indexValue) {
   return new Promise((resolve, reject) => {
+    const formattedIndexValue = String(indexValue);
+    console.log(`Fetching from store ${storeName} by ${indexName} with value ${formattedIndexValue}`);
+
     const tx = db.transaction(storeName, "readonly");
     const store = tx.objectStore(storeName);
     const index = store.index(indexName);
-    const request = index.get(indexValue);
+    const request = index.get(formattedIndexValue);
 
     request.onsuccess = function () {
-      resolve(request.result);
+      if (request.result) {
+        resolve(request.result);
+      } else {
+        reject(new Error(`No item found with index ${formattedIndexValue} in ${indexName}`));
+      }
+    };
+
+    request.onerror = function (event) {
+      reject(new Error(`Error fetching item: ${event.target.errorCode}`));
     };
   });
 }
+
 
 export function getAllFromStore(
   db,
@@ -178,7 +190,7 @@ export function deleteObjectAndDependentsFromStore(
   dependentStores
   // dependent stores should be an object that
   // has a key of the store name and a value of the index name
-  // eg { "development-recipes": "filmStockId"}
+  // eg { "development-recipes": "filmstock_id"}
 ) {
   return new Promise(async (resolve, reject) => {
     const tx = db.transaction(

@@ -9,8 +9,6 @@ export default async ({ request, params }) => {
       const formData = await request.formData();
       const formObject = Object.fromEntries(formData.entries());
 
-      console.log(formObject);
-
       await putObjectInStore(db, "mixes", {
         id: crypto.randomUUID(),
         ...formObject,

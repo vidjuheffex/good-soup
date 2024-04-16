@@ -9,14 +9,25 @@
   flex-direction: column;
   gap: 12px;
   flex: 4;
-  width: 100%;
+    width: 100%;
+
+    .stepsHeader {
+        h2 {
+            display: inline
+        }
+
+        button {
+            color: var(--brand)
+        }
+    }
 
   .timerAndControls {
     display: flex;
     flex-direction: column;
   }
   .controls {
-    display: flex;
+      display: flex;
+      gap: var(--size-2);
   }
 
   .tank {

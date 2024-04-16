@@ -1,4 +1,5 @@
 import Input from "../components/Input";
+import Button from "../components/Button";
 import {
   Form,
   useNavigate,
@@ -9,7 +10,7 @@ import { useState, useRef } from "react";
 
 import "./CreateDevelopmentRecipe.css";
 import Modal from "../components/Modal";
-import StepInput from "../components/StepInput";
+import StepEditor from "../components/StepEditor";
 
 export default function CreateDevelopmentRecipe() {
   const navigate = useNavigate();
@@ -21,49 +22,8 @@ export default function CreateDevelopmentRecipe() {
 
   const formRef = useRef();
 
-  const saveStep = (event) => {
-    setSteps(
-      steps.map((step) => {
-        if (step.id == editingStep) {
-          return {
-            ...step,
-            initialAgitation: formRef.current["step-initial-agitation"].value,
-            agitationTime: formRef.current["step-agitation-time"].value,
-            agitationIntervals:
-              formRef.current["step-agitation-intervals"].value,
-            chemistry: formRef.current["step-chemistry"].value,
-            temp: formRef.current["step-temp"].value,
-            duration: formRef.current["step-duration"].value,
-          };
-        } else {
-          return step;
-        }
-      }),
-    );
-    setEditingStep(null);
-  };
-
   const editStep = (id) => {
     setEditingStep(id);
-  };
-
-  const addStep = () => {
-    const newStepId = crypto.randomUUID();
-
-    setSteps([
-      ...steps,
-      {
-        id: newStepId,
-        initialAgitation: null,
-        agitationTime: null,
-        agitationIntervals: null,
-        chemistry: null,
-        temp: null,
-        duration: null,
-      },
-    ]);
-
-    setEditingStep(newStepId);
   };
 
   return (
@@ -77,54 +37,20 @@ export default function CreateDevelopmentRecipe() {
         />
         <div className="stepsSection">
           <h3>Steps</h3>
-          <input
-            tabIndex={-1}
-            name="steps"
-            value={steps.length > 0 ? JSON.stringify(steps) : ""}
-            required
-            onChange={() => {}}
-            style={{
-              height: "1px",
-              width: "100%",
-              opacity: 0,
-              display: "block",
-              pointerEvents: "none",
-              border: "none",
-              position: "absolute",
-            }}
+          <StepEditor
+            steps={steps}
+            chemistryRecipes={data.chemistryRecipes}
+            form={formRef}
+            onEdit={editStep}
           />
         </div>
-        {steps.map((step, index) => {
-          return (
-            <StepInput
-              key={step.id}
-              id={step.id}
-              index={index + 1}
-              editing={step.id == editingStep}
-              chemistries={data.chemistryRecipes}
-              handleSave={saveStep}
-              handleEdit={editStep}
-              defaultValues={{
-                chemistry: step.chemistry,
-                initialAgitation: step.initialAgitation,
-                agitationTime: step.agitationTime,
-                agitationIntervals: step.agitationIntervals,
-                temp: step.temp,
-                duration: step.duration,
-              }}
-            />
-          );
-        })}
-        <button type="button" onClick={addStep} disabled={editingStep}>
-          Add a step
-        </button>
-        <button type="submit" disabled={editingStep}>
+        <Button type="submit" disabled={editingStep}>
           Submit
-        </button>
+        </Button>
         <input
           readOnly
           type="hidden"
-          name="filmStockId"
+          name="filmstock_id"
           value={params?.stockid}
         />
       </Form>

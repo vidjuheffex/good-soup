@@ -8,14 +8,15 @@ export default async ({ params }) => {
 
   if (!mix) return redirect("/");
 
+   
   const chemistry = await getOneFromStore(
     db,
     "chemistry-recipes",
     "by_id",
-    mix.chemistryId
+    mix.chemistry_id
   );
 
-  mix.chemistry = chemistry;
+  mix._chemistry = chemistry;
 
   return {
     mix,

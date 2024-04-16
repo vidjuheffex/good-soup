@@ -10,7 +10,6 @@ export default function CreateChemistry() {
   const navigate = useNavigate();
   const data = useRouteLoaderData("chemistry-route");
 
-  console.log(data);
   const [showReuseOptions, setShowReuseOptions] = useState(
     !data.chemistry.oneShot,
   );

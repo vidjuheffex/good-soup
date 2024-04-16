@@ -39,7 +39,7 @@ export default function Modal({ children, title, handleClose }) {
             onClick={handleClose}
             aria-label="Close modal"
           >
-            x
+          <span>  {'\u00D7'}</span>
           </button>
         </div>
 

@@ -14,8 +14,8 @@
   --palette-light-tertiary: #f5f3f4;
   --palette-dark-tertiary: #252422;
 
-  --palette-dark-brand: #725ac1;
-  --palette-light-brand: #e0c9ff;
+  --palette-dark-brand: #7c61d4;
+  --palette-light-brand: #ab80e5;
 
   --base-size: 2px;
   --pixel: 1px;
@@ -90,6 +90,10 @@ button {
   font-weight: 500;
   text-transform: uppercase;
   font-family: "Barlow Condensed", sans-serif;
+
+  &:disabled {
+    opacity: 50%;
+  }
 }
 
 #root {

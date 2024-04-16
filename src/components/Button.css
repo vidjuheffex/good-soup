@@ -7,7 +7,8 @@
   font-size: var(--font-size-s);
 
   &[type="submit"] {
-    background-color: var(--brand);
+      background-color: var(--brand);
+      color: var(--white);
   }
 
   &:disabled {

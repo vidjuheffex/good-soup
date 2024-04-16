@@ -1,7 +1,23 @@
 .StepInput {
-    &.editing{
-        border: 1px solid #000;
-        border-radius: 5px;
-        padding: 5px;
+  &:not(.editing) {
+    button {
+      color: var(--brand);
     }
+  }
+  &.editing {
+    border: 1px dashed var(--brand);
+    border-radius: 5px;
+    padding: 5px;
+  }
+
+  .step-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: var(--size-2);
+
+    button:last-child {
+      color: var(--brand);
+    }
+  }
 }

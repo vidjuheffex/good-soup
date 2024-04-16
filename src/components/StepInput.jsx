@@ -9,6 +9,7 @@ export default ({
   handleSave,
   index,
   handleEdit,
+  handleCancel,
   disabled,
   id,
   defaultValues = {},
@@ -26,6 +27,7 @@ export default ({
     ].forEach((ref) => {
       if (ref && !ref.checkValidity()) {
         isValid = false; // Mark as invalid if any input fails validation
+        ref.reportValidity();
       }
     });
 
@@ -45,14 +47,18 @@ export default ({
   const agitationIntervalsInputRef = useRef();
   const tempInputRef = useRef();
 
+  const chemistry = chemistries.find(
+    (chem) => chem.id === defaultValues.chemistry_id,
+  );
+
   return (
     <div className={`StepInput ${editing ? "editing" : ""}`}>
       {editing && (
         <>
           <select
             ref={selectChemistryInputRef}
-            name="step-chemistry"
-            defaultValue={defaultValues?.chemistry || ""}
+            name="step-chemistry-id"
+            defaultValue={defaultValues?.chemistry_id || ""}
             required
           >
             <option value="" hidden disabled>
@@ -113,16 +119,19 @@ export default ({
             ref={agitationIntervalsInputRef}
             defaultValue={defaultValues?.agitationIntervals || ""}
           />
-          <button type="button" onClick={validateSave}>
-            Save Step
-          </button>
+          <div className="step-controls">
+            <button type="button" onClick={handleCancel}>
+              Cancel
+            </button>
+            <button type="button" onClick={validateSave}>
+              Save Step
+            </button>
+          </div>
         </>
       )}
       {!editing && (
         <p>
-          {`Step ${index}: ${
-            chemistries.find((chem) => chem.id == defaultValues.chemistry).name
-          }`}
+          {`Step ${index} - ${chemistry?.name}`}
           <button type="button" disabled={disabled} onClick={handleEditClick}>
             edit
           </button>

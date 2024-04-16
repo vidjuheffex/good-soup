@@ -1,4 +1,4 @@
-import { useFetcher, Link, useParams } from "react-router-dom";
+import { useFetcher, Link, useParams, useNavigate } from "react-router-dom";
 import "./Recipe.css";
 import Tank from "../components/Tank";
 import { secondsToDuration, calculateAdjustedDuration } from "../utils";
@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import Content from "../components/Content";
 import RenameableTitle from "../components/RenameableTitle";
 import Button from "../components/Button";
+import { Outlet } from "react-router-dom";
 
 export default function Recipe({ developmentRecipe }) {
   const formRef = useRef();
@@ -13,6 +14,8 @@ export default function Recipe({ developmentRecipe }) {
   // Track the Current Step
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const currentStep = developmentRecipe.steps[currentStepIndex];
+
+  const navigate = useNavigate();
 
   // Play state - You can actually deduce 3 state from this,
   // isRunning, isPaused, and (isNotStarted)
@@ -32,14 +35,14 @@ export default function Recipe({ developmentRecipe }) {
   // When we pull in the mixes, set the first one found as the default
   const [mixState, setMixState] = useState(() =>
     developmentRecipe.steps.reduce((state, step) => {
-      state[step.id] = step.chemistry.mixes[0] && step.chemistry.mixes[0].id;
+      state[step.id] =
+        step._chemistry?.mixes[0] && step._chemistry?.mixes[0].id;
       return state;
-    }, {})
+    }, {}),
   );
 
   // We 'post' with a form without navigation so we use useFetcher
   const fetcher = useFetcher();
-  const params = useParams();
 
   // Calculate adjusted durations
   //
@@ -51,7 +54,7 @@ export default function Recipe({ developmentRecipe }) {
 
   const [adjustedDurations, setAdjustedDurations] = useState({});
   const [capturedAdjustedDurations, setCapturedAdjustedDurations] = useState(
-    {}
+    {},
   );
 
   const audioContextRef = useRef(null);
@@ -98,17 +101,17 @@ export default function Recipe({ developmentRecipe }) {
 
   useEffect(() => {
     const adjustedDurations = developmentRecipe.steps.reduce((acc, step) => {
-      const mix = step.chemistry.mixes.find(
-        (mix) => mix.id === mixState[step.id]
+      const mix = step._chemistry.mixes.find(
+        (mix) => mix.id === mixState[step.id],
       );
       if (mix) {
-        const exhaustionRate = step.chemistry.exhaustionRate;
+        const exhaustionRate = step._chemistry.exhaustionRate;
         const uses = mix.uses;
         const duration = step.duration;
         acc[step.id] = calculateAdjustedDuration(
           duration,
           exhaustionRate,
-          uses
+          uses,
         );
       }
       return acc;
@@ -168,8 +171,7 @@ export default function Recipe({ developmentRecipe }) {
         if (formData.get("mix")) {
           // If there is a mix selected, submit the form
           // after appending the action to the form data
-
-          formData.append("action", "consume-mix");
+          formData.append("recipe-action", "consume-mix");
           fetcher.submit(formData, { method: "POST" });
         }
 
@@ -189,7 +191,7 @@ export default function Recipe({ developmentRecipe }) {
     setElapsedTime(newElapsedTime);
     setProgress({ ...progress, [currentStepIndex]: newElapsedTime / 1000 });
     const comparisonTime =
-      currentStep.chemistry.mixes.length > 0
+      currentStep._chemistry.mixes.length > 0
         ? adjustedDurations[currentStep.id]
         : currentStep.duration;
 
@@ -198,7 +200,7 @@ export default function Recipe({ developmentRecipe }) {
       setIsPaused(false);
       setElapsedTime(0);
       setCurrentStepIndex((prevIndex) =>
-        prevIndex + 1 < developmentRecipe.steps.length ? prevIndex + 1 : null
+        prevIndex + 1 < developmentRecipe.steps.length ? prevIndex + 1 : null,
       );
       startTimeRef.current = null; // Reset for next step
       pauseTimeRef.current = null; // Reset for next step
@@ -306,20 +308,27 @@ export default function Recipe({ developmentRecipe }) {
       <RenameableTitle
         title={developmentRecipe.name}
         id={developmentRecipe.id}
-        action="/rename-development-recipe"
+        renameAction="/rename-development-recipe"
+        deleteAction="/delete-development-recipe"
       />
       <fetcher.Form method="post" className="Recipe" ref={formRef}>
         <div className="tankAndControls">
           <Tank
-            className={`tank ${isAgitating ? "animate-agitation" : ""
-              } ${!isRunning ? "paused" : ""}`}
-          /><div>
+            className={`tank ${
+              isAgitating ? "animate-agitation" : ""
+            } ${!isRunning ? "paused" : ""}`}
+          />
+          <div>
             <div className="timerAndControls">
               <h3 className="timer">
                 {secondsToDuration(parseInt(elapsedTime / 1000))}
               </h3>
               <div className="controls">
-                <Button type="submit" onClick={toggleTimer} disabled={!currentStep}>
+                <Button
+                  type="submit"
+                  onClick={toggleTimer}
+                  disabled={!currentStep}
+                >
                   {status === "running"
                     ? "Pause"
                     : status === "paused"
@@ -335,65 +344,75 @@ export default function Recipe({ developmentRecipe }) {
                   onClick={handleSkipStep}
                 >
                   Skip Step
-                </Button></div>
+                </Button>
+              </div>
             </div>
           </div>
-
         </div>
 
-        <h2>Steps</h2>
-        {developmentRecipe.steps.map((step, index) => (
-          <div
-            key={step.id}
-            className={`step ${currentStepIndex === index ? "active" : ""} ${startedSteps.includes(step.id) && currentStepIndex !== index
-                ? "done"
-                : ""
+        <div className="stepsHeader">
+          <h2>Steps</h2>{" "}
+          <button onClick={() => navigate("edit-steps")}>Edit</button>
+        </div>
+        {developmentRecipe.steps.map((step, index) => {
+          return (
+            <div
+              key={step.id}
+              className={`step ${currentStepIndex === index ? "active" : ""} ${
+                startedSteps.includes(step.id) && currentStepIndex !== index
+                  ? "done"
+                  : ""
               }`}
-          >
-            <h3>
-              {`Step ${index + 1} - ${step.chemistry.name} @ ${step.temp
+            >
+              <h3>
+                {`Step ${index + 1} - ${step._chemistry.name} @ ${
+                  step.temp
                 }°F for ${secondsToDuration(step.duration)}`}
-              {step.chemistry.mixes.length > 0 &&
-                ` (+${secondsToDuration(
-                  (isRunning || isPaused) && currentStepIndex === index
-                    ? capturedAdjustedDurations[step.id] - step.duration
-                    : adjustedDurations[step.id] - step.duration
-                )})`}
-            </h3>
-            {step.chemistry.mixes.length > 0 && (
-              <div className="mixInfo">
-                <label><span>Using mix:</span>
-                  <select
-                    name={currentStepIndex === index ? "mix" : undefined}
-                    value={mixState[step.id]}
-                    disabled={startedSteps.includes(step.id)}
-                    onChange={(ev) => handleChangeMix(ev, step.id)}
-                  >
-                    {step.chemistry.mixes.map((mix) => (
-                      <option key={mix.id} value={mix.id}>
-                        {mix.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                Uses:{" "}
-                {`${step.chemistry.mixes.find(
-                  (mix) => mix.id === mixState[step.id]
-                )?.uses
+                {step._chemistry.mixes.length > 0 &&
+                  ` (+${secondsToDuration(
+                    (isRunning || isPaused) && currentStepIndex === index
+                      ? capturedAdjustedDurations[step.id] - step.duration
+                      : adjustedDurations[step.id] - step.duration,
+                  )})`}
+              </h3>
+              {step._chemistry.mixes.length > 0 && (
+                <div className="mixInfo">
+                  <label>
+                    <span>Using mix:</span>
+                    <select
+                      name={currentStepIndex === index ? "mix" : undefined}
+                      value={mixState[step.id]}
+                      disabled={startedSteps.includes(step.id)}
+                      onChange={(ev) => handleChangeMix(ev, step.id)}
+                    >
+                      {step._chemistry.mixes.map((mix) => (
+                        <option key={mix.id} value={mix.id}>
+                          {mix.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  Uses:{" "}
+                  {`${
+                    step._chemistry.mixes.find(
+                      (mix) => mix.id === mixState[step.id],
+                    )?.uses
                   } uses`}
-              </div>
-            )}
-            <progress
-              value={progress[index] || 0}
-              max={
-                step.chemistry.mixes.length > 0
-                  ? capturedAdjustedDurations[step.id]
-                  : step.duration
-              }
-            />
-          </div>
-        ))}
+                </div>
+              )}
+              <progress
+                value={progress[index] || 0}
+                max={
+                  step._chemistry.mixes.length > 0
+                    ? capturedAdjustedDurations[step.id]
+                    : step.duration
+                }
+              />
+            </div>
+          );
+        })}
       </fetcher.Form>
+      <Outlet />
     </Content>
   );
 }
