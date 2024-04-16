@@ -12,7 +12,7 @@ export default () => {
   const { mix } = useLoaderData();
 
   const data = [
-    {Chemistry: mix.chemistry.name}
+    {Chemistry: mix._chemistry.name}
   ];
 
   if (mix.notes) {
@@ -21,11 +21,11 @@ export default () => {
 
   data.push({ Uses: mix.uses });
 
-  if (!mix.chemistry.oneShot) {
-    if (mix.chemistry.shelfLife) {
+  if (!mix._chemistry.oneShot) {
+    if (mix._chemistry.shelfLife) {
     const expirationDateString = createdDateAndShelfLifeToExpirationDate(
       mix.createdAt,
-      mix.chemistry.shelfLife
+      mix._chemistry.shelfLife
     ).toLocaleDateString("en-US");
     data.push({ "Expiration Date": expirationDateString });
     }
