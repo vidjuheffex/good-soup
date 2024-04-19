@@ -24,16 +24,20 @@ export function secondsToDuration(seconds) {
  * @returns {number} seconds
  */
 export function durationToSeconds(duration) {
-  const parts = duration
-    .split(":")
-    .reverse()
-    .map((part) => parseInt(part, 10));
-  const multipliers = [1, 60, 3600];
-  let totalSeconds = 0;
-  for (let i = 0; i < parts.length; i++) {
-    totalSeconds += parts[i] * (multipliers[i] || 0);
+  if (duration) {
+    const parts = duration
+      .split(":")
+      .reverse()
+      .map((part) => parseInt(part, 10));
+    const multipliers = [1, 60, 3600];
+    let totalSeconds = 0;
+    for (let i = 0; i < parts.length; i++) {
+      totalSeconds += parts[i] * (multipliers[i] || 0);
+    }
+    return totalSeconds;
+  } else {
+    return 0;
   }
-  return totalSeconds;
 }
 /**
  * Converts a shelf life string to seconds. Shelf lives are measured in
